@@ -1,0 +1,30 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: bigquery-controller
+  labels:
+    name: bigquery-controller
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: bigquery-controller
+    spec:
+      containers:
+      - name: bigquery
+        image: gcr.io/jminsk-thesis/pubsub_pipeline:latest
+        env:
+        - name: PROCESSINGSCRIPT
+          value: pubsub-to-bigquery
+        # Change this to your pubsub topic
+        - name: PUBSUB_TOPIC
+          value: projects/jminsk-thesis/topics/tweets
+        # Change this to your project ID.
+        - name: PROJECT_ID
+          value: jminsk-thesis
+        # Change the following two settings to your dataset and table.
+        - name: BQ_DATASET
+          value: twitter
+        - name: BQ_TABLE
+          value: tweets2
