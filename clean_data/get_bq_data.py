@@ -70,3 +70,4 @@ df.truncated = df.truncated.astype(int)
 df.verified = df.verified.astype(int)
 
 # TODO: combine price to tweet dataframe, maybe sort tweets by vaild trade times
+# TODO: add bi adn tri grams use nltk ngrams
