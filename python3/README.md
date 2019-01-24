@@ -17,6 +17,8 @@ git commit -a -m ""
 
 git push origin master
 
+cloudshell env build-local
+
 cloudshell env push
 
 cloudshell env update-default-image
