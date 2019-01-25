@@ -126,8 +126,6 @@ for i in range(0, len(dates_list) - 1):
 
     print("IDs are One Hot")
 
-    df = df.to_sparse(fill_value=0)
-
     # write to a new gbq
     print("Writing to Bucket")
 
