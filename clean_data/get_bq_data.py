@@ -8,6 +8,7 @@ from nltk.tokenize import TweetTokenizer
 from nltk.stem.porter import PorterStemmer
 from nltk.util import ngrams
 
+print("--Start--")
 
 nltk.download('punkt')
 nltk.download('stopwords')
@@ -20,8 +21,12 @@ query = "SELECT created_at, id_str, text, truncated, user.verified, user.followe
 
 df = pd.io.gbq.read_gbq(query, project_id="jminsk-thesis", dialect="standard")
 
+print("BigQuery Data is Loaded")
+
 # get rid of date/times that are not part of the minute by minute price data
 date_df = pd.read_pickle("./date_iex_data.pkl")
+
+print("Price Data is Loaded")
 
 df.created_at = df.created_at.map(lambda x: x.replace(second=0))
 df = df.rename(index=str, columns={"created_at": "date"})
@@ -29,7 +34,11 @@ date_df.date = date_df.date - pd.Timedelta(minutes=1)
 
 df = pd.merge(df, date_df, on="date", how="outer")
 
+print("Data is Merged")
+
 del date_df
+
+print("Price Data is Deleated ")
 
 # process urls to make space
 df.urls = df.urls.str.len()
@@ -56,6 +65,8 @@ def preprocess(x):
 
 df.text = df.text.apply(preprocess)
 
+print("Tweets are PreProcessed")
+
 # one hot the data
 # https://stackoverflow.com/questions/45312377/how-to-one-hot-encode-from-a-pandas-column-containing-a-list
 def pir_fast(df):
@@ -75,6 +86,8 @@ def pir_fast(df):
 # one hot the text
 df = pir_fast(df)
 
+print("One Hot Done for Tweets")
+
 # replace true and false with 1 and 0
 df.truncated = df.truncated.astype(int)
 df.verified = df.verified.astype(int)
@@ -82,6 +95,11 @@ df.verified = df.verified.astype(int)
 # one hot the str ids
 df = pd.get_dummies(df, "str_id")
 
+print("IDs are One Hot")
+
 # write to a new gbq
+print("Writing to BigQuery")
 
 pd.io.gbq.to_gbq(df, "jminsk-thesis.twitter.clean_twitter")
+
+print("Saved to BigQuery")
