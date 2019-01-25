@@ -7,6 +7,7 @@ from nltk.corpus import stopwords
 from nltk.tokenize import TweetTokenizer
 from nltk.stem.porter import PorterStemmer
 from nltk.util import ngrams
+from datetime import datetime
 
 print("--Start--")
 
@@ -16,6 +17,12 @@ nltk.download('stopwords')
 
 # Get Tweets from bigquery
 client = bigquery.Client()
+
+start = datetime(2018, 12, 12)
+
+end = datetime(2019, 1, 22)
+
+dates_list = pd.date_range(start, end).tolist()
 
 query = "SELECT created_at, id_str, text, truncated, user.verified, user.followers_count, user.favourites_count, entities.urls FROM `jminsk-thesis.twitter.tweets2` WHERE lang='en'"
 
@@ -66,6 +73,8 @@ def preprocess(x):
 df.text = df.text.apply(preprocess)
 
 print("Tweets are PreProcessed")
+
+df.to_parquet
 
 # one hot the data
 # https://stackoverflow.com/questions/45312377/how-to-one-hot-encode-from-a-pandas-column-containing-a-list
