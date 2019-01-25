@@ -18,16 +18,20 @@ end = parse("2019-01-22 15:59:00")
 date_list = pd.date_range(start=start, end=end, freq="min")
 
 df.index = df.date
+df = df.drop(columns=["date"])
 df = df.reindex(date_list, fill_value=np.nan)
+df = df.reset_index()
+df = df.rename(columns={"index":"date"})
 
 # Fill Na with values above
 df = df.fillna(method="ffill")
+df = df.dropna()
 
 # Save all data to a pickle
 df.to_pickle("./iex_clean.pkl")
 
 # create a smaller dataframe to add to twitter and wallstreet journal
-date_df = pd.DataFrame({"date": df.date, "stock_price_col" : df.average})
+date_df = pd.DataFrame({"date_col": df.date, "stock_price_col" : df.average})
 
 # save smaller df to a pickle
 date_df.to_pickle("./date_iex_data.pkl")

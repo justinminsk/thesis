@@ -24,4 +24,5 @@ for date in dates:
     print(day_trades)
     minute_data = minute_data.append(day_trades)
 
+
 minute_data.to_csv("mintue_trade_data.csv")
