@@ -70,7 +70,7 @@ client = bigquery.Client()
 start = parse("2018-12-12 09:29:00")
 end = parse("2019-01-23 16:00:00")
 
-dates_list = pd.date_range(start=start, end=end, freq="min")
+dates_list = pd.date_range(start=start, end=end, freq="30min")
 
 date_df = pd.read_pickle("./date_iex_data.pkl")
 print("Price Data is Loaded")
