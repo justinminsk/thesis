@@ -1,5 +1,6 @@
 import nltk
 import re
+import fastparquet
 import pandas as pd
 import numpy as np
 from google.cloud import bigquery
@@ -129,9 +130,9 @@ for i in range(0, len(dates_list) - 1):
     # write to a new gbq
     print("Writing to Bucket")
 
-    df.to_pickle("temp.pkl")
+    fastparquet.write("temp.parquet", df)
 
-    upload_blob("jminsk_thesis", "./temp.pkl", "tweeterdata/data"+str(dates_list[i])+"to"+str(dates_list[i+1])+".pkl")
+    upload_blob("jminsk_thesis", "./temp.parquet", "tweeterdata/data"+str(dates_list[i])+"to"+str(dates_list[i+1])+".parquet")
 
     # df = pd.read_pickle("temp.pkl") 
 

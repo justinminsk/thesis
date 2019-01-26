@@ -4,7 +4,7 @@ FROM gcr.io/cloudshell-images/cloudshell:latest
 
 RUN sudo apt-get update
 RUN sudo apt-get install python3.6
-RUN sudo pip3 install -U pandas matplotlib seaborn scikit-learn tweepy iexfinance pandas-gbq nltk
+RUN sudo pip3 install -U pandas matplotlib seaborn scikit-learn tweepy iexfinance pandas-gbq nltk fastparquet
 RUN sudo pip3 install tensorflow
 
 # To trigger a rebuild of your Cloud Shell image:
