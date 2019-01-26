@@ -28,7 +28,7 @@ def pir_fast(df):
     n, m = len(v), u.size
     i = np.arange(n).repeat(l)
 
-    dummies = pd.SparseDataFrame(
+    dummies = pd.DataFrame(
         np.bincount(i * m + f, minlength=n * m).reshape(n, m),
         df.index, u
     )
@@ -99,7 +99,7 @@ for i in range(0, len(dates_list) - 1):
     print("Data is Merged")
 
     # process urls to make space
-    df.urls = df.urls.str.len().to_sparse(fill_value=0)
+    df.urls = df.urls.str.len()
     df = df.fillna(0)
 
     # start processing words
@@ -119,8 +119,8 @@ for i in range(0, len(dates_list) - 1):
     print("One Hot Done for Tweets")
 
     # replace true and false with 1 and 0
-    df.truncated = df.truncated.astype(int).to_sparse(fill_value=0)
-    df.verified = df.verified.astype(int).to_sparse(fill_value=0)
+    df.truncated = df.truncated.astype(int)
+    df.verified = df.verified.astype(int)
 
     # one hot the str ids
     df = pd.get_dummies(df, "str_id", sparse=True)
