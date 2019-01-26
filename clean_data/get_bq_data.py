@@ -1,6 +1,7 @@
 import nltk
 import re
 import fastparquet
+import gc
 import pandas as pd
 import numpy as np
 from google.cloud import bigquery
@@ -73,12 +74,12 @@ end = parse("2019-01-23 16:00:00")
 
 dates_list = pd.date_range(start=start, end=end, freq="45min")
 
-date_df = pd.read_pickle("./date_iex_data.pkl")
-print("Price Data is Loaded")
-
 print("Going Minute by Minute")
 for i in range(0, len(dates_list) - 1):
     print("Start " , dates_list[i] , " to " , dates_list[i+1])
+
+    date_df = pd.read_pickle("./date_iex_data.pkl")
+    print("Price Data is Loaded")
     
     query = "SELECT created_at, id_str, text, truncated, user.verified, user.followers_count, user.favourites_count, entities.urls" \
             " FROM `jminsk-thesis.twitter.tweets2`" \
@@ -139,5 +140,6 @@ for i in range(0, len(dates_list) - 1):
     print(df.head())
     print(df.shape)
     print(df.stock_price_col.head())
+    gc.collect()
 
 print("--End--")
