@@ -24,6 +24,6 @@ sudo apt update
 
 sudo apt install python3-pip
 
-sudo pip3 install -U pandas matplotlib seaborn scikit-learn tweepy iexfinance pandas-gbq nltk google-cloud-storage fastparquet
+sudo pip3 install -U pandas matplotlib seaborn scikit-learn tweepy iexfinance pandas-gbq nltk google-cloud-storage fastparquet tqdm
 
 sudo pip3 install --upgrade google-cloud-storage

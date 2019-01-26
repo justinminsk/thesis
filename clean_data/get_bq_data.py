@@ -4,6 +4,7 @@ import fastparquet
 import gc
 import pandas as pd
 import numpy as np
+from tqdm import tqdm
 from google.cloud import bigquery
 from google.cloud import storage
 from nltk.corpus import stopwords
@@ -35,7 +36,7 @@ def pir_fast(df, column):
     )
 
     # Only get words and ids that have less then 4 tweets containing them
-    for col in dummies.columns:
+    for col in tqdm(dummies.columns):
         if len(dummies.loc[dummies[col] > 0]) < 4:
             dummies = dummies.drop(col, 1)
 
