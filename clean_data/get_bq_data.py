@@ -123,7 +123,7 @@ for i in range(0, len(dates_list) - 1):
     df.verified = df.verified.astype(int)
 
     # one hot the str ids
-    df = pd.get_dummies(df, "str_id", sparse=True)
+    df = pd.get_dummies(df, "str_id")
 
     print("IDs are One Hot")
 

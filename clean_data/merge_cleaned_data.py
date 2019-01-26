@@ -29,8 +29,9 @@ blob_list = list_blobs("jminsk-thesis/tweeterdata")
 final_df = pd.DataFrame()
 
 for blob in blob_list:
-    upload_blob("jminsk-thesis/tweeterdata", blob, "temp.pkl")
-    df = pd.read_pickle("temp.pkl")
+    upload_blob("jminsk-thesis/tweeterdata", blob, "temp.parquet")
+    pq = fastparquet.ParquetFile("temp.parquet")
+    df = pq.to_pandas()
 
     final_df = pd.concat([final_df, df]).fillna(0).to_sparse(fill_value=0)
 
