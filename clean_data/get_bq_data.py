@@ -121,8 +121,6 @@ for i in range(0, len(dates_list) - 1):
     # one hot the text
     df = pir_fast(df, "text")
 
-
-
     print("One Hot Done for Tweets")
 
     # replace true and false with 1 and 0
