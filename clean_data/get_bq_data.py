@@ -36,9 +36,7 @@ def pir_fast(df, column):
     )
 
     # Only get words and ids that have less then 4 tweets containing them
-    for col in tqdm(dummies.columns):
-        if len(dummies.loc[dummies[col] > 0]) < 4:
-            dummies = dummies.drop(col, 1)
+    dummies = dummies.drop([col for col, val in tqdm(dummies.sum().iteritems()) if val < 4], axis=1, inplace=True)
 
     return df.drop(column, 1).join(dummies)
 
