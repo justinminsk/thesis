@@ -35,7 +35,7 @@ def pir_fast(df, column):
     )
 
     # Only get words and ids that have less then 4 tweets containing them
-    dummies = dummies.drop([col for col, val in dummies.sum().iteritems() if val < 4], axis=1)
+    dummies = dummies.drop([col for col, val in dummies.sum().iteritems() if val < 3], axis=1)
 
     return df.drop(column, 1).join(dummies)
 
