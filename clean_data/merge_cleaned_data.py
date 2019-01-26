@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from tqdm import tqdm
 from google.cloud import bigquery
 from google.cloud import storage
 
@@ -28,7 +29,7 @@ blob_list = list_blobs("jminsk-thesis/tweeterdata")
 
 final_df = pd.DataFrame()
 
-for blob in blob_list:
+for blob in tqdm(blob_list):
     upload_blob("jminsk-thesis/tweeterdata", blob, "temp.parquet")
     pq = fastparquet.ParquetFile("temp.parquet")
     df = pq.to_pandas()
