@@ -10,6 +10,10 @@ Will pull the data from bigquery and process the data by creating one hots and a
 
 ### notes on get_bq_data
 
+Need to do Dimensionality Reduction (PCA, word2vec, count) prob per a time period (45 mins?) 
+
+Need to create table with count and str_id to append on later
+
 Will not run on cloud shell
 
 Used a n1-standard-8 (8 vCPUs, 30 GB memory) with  Allow full access to all Cloud APIs.

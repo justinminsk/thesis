@@ -22,8 +22,8 @@ nltk.download('stopwords')
 
 # one hot the data
 # https://stackoverflow.com/questions/45312377/how-to-one-hot-encode-from-a-pandas-column-containing-a-list
-def pir_fast(df):
-    v = df.text.values
+def pir_fast(df, column):
+    v = df[column].values
     l = [len(x) for x in v.tolist()]
     f, u = pd.factorize(np.concatenate(v))
     n, m = len(v), u.size
@@ -34,7 +34,12 @@ def pir_fast(df):
         df.index, u
     )
 
-    return df.drop('text', 1).join(dummies)
+    # Only get words and ids that have less then 4 tweets containing them
+    for col in dummies.columns:
+        if len(dummies.loc[dummies[col] > 0]) < 4:
+            dummies = dummies.drop(col, 1)
+
+    return df.drop(column, 1).join(dummies)
 
 
 # preprocess text data
@@ -45,9 +50,7 @@ def preprocess(x):
     x = [stemmer.stem(w) for w in x]
     bigrams = ngrams(x, 2)
     bigrams = ["_".join(list(gram)) for gram in bigrams]
-    trigrams = ngrams(x, 3)
-    trigrams = ["_".join(list(gram)) for gram in trigrams]
-    x = x + bigrams + trigrams
+    x = x + bigrams
     return x
 
 
@@ -91,9 +94,10 @@ for i in range(0, len(dates_list) - 1):
 
     # get rid of date/times that are not part of the minute by minute price data
     if len(df.index) > 0: 
-        df = df.rename(index=str, columns={"created_at": "date_col"})
+        df.loc[:,'date_col'] = df.created_at
         df.date_col = df.date_col.map(lambda x: x.replace(second=0, microsecond=0))
         df = pd.merge(df, date_df, on="date_col", how="left")
+        df = df.drop("date_col", 1)
     else:
         continue 
 
@@ -105,7 +109,7 @@ for i in range(0, len(dates_list) - 1):
 
     # start processing words
     nltk_stopwords = stopwords.words("english")
-    tknzr = TweetTokenizer(preserve_case=False)
+    tknzr = TweetTokenizer(preserve_case=False, reduce_len=True)
     stemmer = PorterStemmer()
 
     df.text = df.text.astype(str)
@@ -115,18 +119,15 @@ for i in range(0, len(dates_list) - 1):
     print("Tweets are PreProcessed")
 
     # one hot the text
-    df = pir_fast(df)
+    df = pir_fast(df, "text")
+
+
 
     print("One Hot Done for Tweets")
 
     # replace true and false with 1 and 0
     df.truncated = df.truncated.astype(int)
     df.verified = df.verified.astype(int)
-
-    # one hot the str ids
-    df = pd.get_dummies(df, "str_id")
-
-    print("IDs are One Hot")
 
     # write to a new gbq
     print("Writing to Bucket")
@@ -135,11 +136,10 @@ for i in range(0, len(dates_list) - 1):
 
     upload_blob("jminsk_thesis", "./temp.parquet", "tweeterdata/data"+str(dates_list[i])+"to"+str(dates_list[i+1])+".parquet")
 
-    # df = pd.read_pickle("temp.pkl") 
+    # TODO: make a new table that will create a running count of each user this info will be added back later
 
     print(df.head())
-    print(df.shape)
-    print(df.stock_price_col.head())
+    print("Shape: " + df.shape)
     gc.collect()
 
 print("--End--")
