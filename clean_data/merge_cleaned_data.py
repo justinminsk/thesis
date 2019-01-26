@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from tqdm import tqdm
+import fastparquet
 from google.cloud import bigquery
 from google.cloud import storage
 
