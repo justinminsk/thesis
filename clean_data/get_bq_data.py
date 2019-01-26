@@ -35,7 +35,7 @@ def pir_fast(df, column):
     )
 
     # Only get words and ids that have less then 4 tweets containing them
-    dummies = dummies.drop([col for col, val in dummies.sum().iteritems() if val < 3], axis=1)
+    dummies = dummies.drop([col for col, val in dummies.sum().iteritems() if val < 4], axis=1)
 
     return df.drop(column, 1).join(dummies)
 
@@ -135,7 +135,7 @@ for i in range(0, len(dates_list) - 1):
     # TODO: make a new table that will create a running count of each user this info will be added back later
 
     print(df.head())
-    print("Shape: " + df.shape)
+    print("Shape: " , df.shape)
     gc.collect()
 
 print("--End--")
