@@ -70,7 +70,7 @@ def upload_blob(bucket_name, source_file_name, destination_blob_name):
 client = bigquery.Client()
 
 # get minute by minute list 
-start = parse("2018-12-12 09:29:00")
+start = parse("#2018-12-18 19:59:00")  2018-12-12 09:29:00
 end = parse("2019-01-23 16:00:00")
 
 dates_list = pd.date_range(start=start, end=end, freq="45min")
