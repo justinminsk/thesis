@@ -77,6 +77,8 @@ end = parse("2019-01-23 16:00:00")
 
 dates_list = pd.date_range(start=start, end=end, freq="45min")
 
+# moving to pyspark and dataproc prob will not need these parquet files 
+"""
 for i in tqdm(range(0, len(dates_list) - 1)):
     print("Start " , dates_list[i] , " to " , dates_list[i+1])
 
@@ -88,7 +90,7 @@ for i in tqdm(range(0, len(dates_list) - 1)):
     
     query = "SELECT created_at, id_str, text, truncated, user.verified, user.followers_count, user.favourites_count, entities.urls" \
             " FROM `jminsk-thesis.twitter.tweets2`" \
-            " WHERE lang='en' AND created_at BETWEEN '"+str(dates_list[i])+"' AND '"+str(dates_list[i+1])+"' "
+            " WHERE lang='en'" # AND created_at BETWEEN '"+str(dates_list[i])+"' AND '"+str(dates_list[i+1])+"' 
 
     df = pd.io.gbq.read_gbq(query, project_id="jminsk-thesis", dialect="standard")
 
@@ -140,10 +142,61 @@ for i in tqdm(range(0, len(dates_list) - 1)):
 
     upload_blob("jminsk_thesis", "./temp.parquet", "tweeterdata/data"+str(dates_list[i])+"to"+str(dates_list[i+1])+".parquet")
 
-    # TODO: make a new table that will create a running count of each user this info will be added back later
-
     print(df.head())
     print("Shape: " , df.shape)
     gc.collect()
+"""
+
+date_df = pd.read_pickle("./date_iex_data.pkl")
+print("Price Data is Loaded")
+
+user_df = pd.read_parquet("user_list.parquet", engine="fastparquet")
+print("User Data is Loaded")
+    
+query = "SELECT created_at, id_str, text, truncated, user.verified, user.followers_count, user.favourites_count, entities.urls" \
+        " FROM `jminsk-thesis.twitter.tweets2`" \
+        " WHERE lang='en'" # AND created_at BETWEEN '"+str(dates_list[i])+"' AND '"+str(dates_list[i+1])+"' 
+
+df = pd.io.gbq.read_gbq(query, project_id="jminsk-thesis", dialect="standard")
+
+print("BigQuery Data is Loaded")
+
+# get rid of date/times that are not part of the minute by minute price data
+if len(df.index) > 0: 
+    df.loc[:,'date_col'] = df.created_at
+    df.date_col = df.date_col.map(lambda x: x.replace(second=0, microsecond=0))
+    df = pd.merge(df, date_df, on="date_col", how="left")
+    df = df.drop("date_col", 1)
+    df = pd.merge(df, user_df, on="id_str", how="left")
+    df = df.drop("id_str", 1)
+else:
+    continue 
+
+print("Data is Merged")
+
+# process urls to make space
+df.urls = df.urls.str.len()
+df = df.fillna(0)
+
+# start processing words
+nltk_stopwords = stopwords.words("english")
+tknzr = TweetTokenizer(preserve_case=False, reduce_len=True)
+stemmer = PorterStemmer()
+
+df.text = df.text.astype(str)
+
+df.text = df.text.apply(preprocess)
+
+df = (df.text).drop_duplicates()
+
+print("Tweets are PreProcessed")
+
+# replace true and false with 1 and 0
+df.truncated = df.truncated.astype(int)
+df.verified = df.verified.astype(int)
+
+print("Saving to BQ")
+
+df.to_gbq(project_id="jminsk-thesis", destination_table="twitter.clean_twitter_data", if_exists='replace')
 
 print("--End--")
