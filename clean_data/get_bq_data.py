@@ -82,6 +82,9 @@ for i in tqdm(range(0, len(dates_list) - 1)):
 
     date_df = pd.read_pickle("./date_iex_data.pkl")
     print("Price Data is Loaded")
+
+    user_df = pd.read_parquet("user_list.parquet", engine="fastparquet")
+    print("User Data is Loaded")
     
     query = "SELECT created_at, id_str, text, truncated, user.verified, user.followers_count, user.favourites_count, entities.urls" \
             " FROM `jminsk-thesis.twitter.tweets2`" \
@@ -97,6 +100,8 @@ for i in tqdm(range(0, len(dates_list) - 1)):
         df.date_col = df.date_col.map(lambda x: x.replace(second=0, microsecond=0))
         df = pd.merge(df, date_df, on="date_col", how="left")
         df = df.drop("date_col", 1)
+        df = pd.merge(df, user_df, on="id_str", how="left")
+        df = df.drop("id_str", 1)
     else:
         continue 
 
