@@ -31,7 +31,7 @@ for blob in tqdm(blob_list):
     download_blob("jminsk_thesis", blob.name, "./temp.parquet")
     df = pd.read_parquet('temp.parquet', engine='fastparquet')
 
-    final_df = pd.concat([final_df, df]).fillna(0) # .to_sparse(fill_value=0)
+    final_df = pd.concat([final_df, df]).fillna(0).to_sparse(fill_value=0)
 
 final_df.to_gbq(project_id="jminsk-thesis", destination_table="twitter.clean_twitter_data_2018_12_12", if_exists='replace')
     
