@@ -28,15 +28,10 @@ df = pd.io.gbq.read_gbq(query, project_id="jminsk-thesis", dialect="standard")
 
 print("BigQuery Data is Loaded")
 
-df["count"] = 1
+print(df.shape)
+
+df = df.count(axis=1)
 
 print(df.head())
-
-df = df.set_index(["id_str"]).count(level="id_str")
-
-print(df.head())
-
-df = df.reset_index()
-
-print(df.head())
+print(df.shape)
     
