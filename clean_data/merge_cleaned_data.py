@@ -19,7 +19,7 @@ def download_blob(bucket_name, source_blob_name, destination_file_name):
         destination_file_name))
 
 storage_client = storage.Client()
-bucket = storage_client.get_bucket("jminsk_thesis")
+bucket = storage_client.get_bucket("jminsk_thesis/tweeterdata/")
 
 blob_list = bucket.list_blobs()
 
