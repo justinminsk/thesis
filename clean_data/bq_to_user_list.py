@@ -28,7 +28,7 @@ print("BigQuery Data is Loaded")
 
 print(df.shape)
 
-df = df.value_counts()
+df = df.id_str.value_counts()
 
 print(df)
 print(df.head())
