@@ -22,12 +22,13 @@ storage_client = storage.Client()
 bucket = storage_client.get_bucket("jminsk_thesis")
 
 blob_list = bucket.list_blobs()
+print(blob_list)
 
 final_df = pd.DataFrame()
 
 for blob in tqdm(blob_list):
-    download_blob("jminsk_thesis", blob.name, "./tw_data")
-    df = pd.read_parquet('tw_data', engine='fastparquet')
+    download_blob("jminsk_thesis", blob.name, "./temp.parquet")
+    df = pd.read_parquet('temp.parquet', engine='fastparquet')
 
     final_df = pd.concat([final_df, df]).fillna(0).to_sparse(fill_value=0)
 
