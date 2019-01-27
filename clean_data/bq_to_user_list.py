@@ -28,11 +28,12 @@ print("BigQuery Data is Loaded")
 
 print(df.shape)
 
-df = df.id_str.value_counts()
+df["id_count"] = 1
 
-df.id_str = df.reset_index()
+df = df.groupby(['id_str']).count()
 
-print(df)
+df = df.reset_index()
+
 print(df.head())
 print(df.shape)
 
