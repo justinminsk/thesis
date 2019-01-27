@@ -21,7 +21,7 @@ def download_blob(bucket_name, source_blob_name, destination_file_name):
 storage_client = storage.Client()
 bucket = storage_client.get_bucket("jminsk_thesis")
 
-blob_list = bucket.list_blobs()
+blob_list = bucket.list_blobs(prefix="data2018-12-12")
 
 final_df = pd.DataFrame()
 
@@ -33,5 +33,5 @@ for blob in tqdm(blob_list):
 
     final_df = pd.concat([final_df, df]).fillna(0) # .to_sparse(fill_value=0)
 
-final_df.to_gbq(project_id="jminsk-thesis", destination_table="twitter.clean_twitter_data", if_exists='replace')
+final_df.to_gbq(project_id="jminsk-thesis", destination_table="twitter.clean_twitter_data_2018_12_12", if_exists='replace')
     
