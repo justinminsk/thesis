@@ -1,10 +1,8 @@
 import fastparquet
-# import gc
 import pandas as pd
 import numpy as np
 from google.cloud import bigquery
 from google.cloud import storage
-# from dateutil.parser import *
 
 
 print("--Start--")
@@ -34,4 +32,6 @@ df = df.count(axis=1)
 
 print(df.head())
 print(df.shape)
+
+fastparquet.write("user_list.parquet", df)
     

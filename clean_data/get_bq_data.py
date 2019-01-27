@@ -10,6 +10,7 @@ from nltk.corpus import stopwords
 from nltk.tokenize import TweetTokenizer
 from nltk.stem.porter import PorterStemmer
 from nltk.util import ngrams
+from tqdm import tqdm
 from dateutil.parser import *
 
 
@@ -43,6 +44,7 @@ def pir_fast(df, column):
 # preprocess text data
 def preprocess(x):
     x = re.sub(r"http\S+", "", x)
+    x = re.sub("RT @[\w_]+: ", "", x)
     x = tknzr.tokenize(x)
     x = [w for w in x if w not in set(nltk_stopwords)]
     x = [stemmer.stem(w) for w in x]
@@ -75,8 +77,7 @@ end = parse("2019-01-23 16:00:00")
 
 dates_list = pd.date_range(start=start, end=end, freq="45min")
 
-print("Going Minute by Minute")
-for i in range(0, len(dates_list) - 1):
+for i in tqdm(range(0, len(dates_list) - 1)):
     print("Start " , dates_list[i] , " to " , dates_list[i+1])
 
     date_df = pd.read_pickle("./date_iex_data.pkl")
@@ -113,6 +114,8 @@ for i in range(0, len(dates_list) - 1):
     df.text = df.text.astype(str)
 
     df.text = df.text.apply(preprocess)
+
+    df = (df.text).drop_duplicates()
 
     print("Tweets are PreProcessed")
 
