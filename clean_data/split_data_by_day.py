@@ -35,8 +35,8 @@ date_df = pd.read_parquet("date_iex_data.parquet", engine="fastparquet")
 date_df['date_col'] = pd.to_datetime(date_df['date_col'])
 
 df.created_at = df.created_at.apply(parse)
-df['date_col'] = pd.to_datetime(df['date_col'])
 df.loc[:,'date_col'] = df.created_at
+df['date_col'] = pd.to_datetime(df['date_col'])
 df.date_col = df.date_col.map(lambda x: x.replace(second=0, microsecond=0))
 df = pd.merge(df, date_df, on="date_col", how="left")
 df = df.drop("date_col", 1)
