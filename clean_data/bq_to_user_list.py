@@ -30,6 +30,7 @@ print(df.shape)
 
 df = df.value_counts()
 
+print(df)
 print(df.head())
 print(df.shape)
 
