@@ -19,13 +19,15 @@ def download_blob(bucket_name, source_blob_name, destination_file_name):
         destination_file_name))
 
 storage_client = storage.Client()
-bucket = storage_client.get_bucket("jminsk_thesis/tweeterdata/")
+bucket = storage_client.get_bucket("jminsk_thesis")
 
 blob_list = bucket.list_blobs()
 
 final_df = pd.DataFrame()
 
 for blob in tqdm(blob_list):
+    if blob.name == "tweeterdata/":
+        continue
     print(blob.name)
     download_blob("jminsk_thesis", blob.name, "./temp.parquet")
     df = pd.read_parquet('temp.parquet', engine='fastparquet')
