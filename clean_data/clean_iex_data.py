@@ -3,7 +3,8 @@ import pandas as pd
 import numpy as np
 from dateutil.parser import *
 
-
+print("--Start--")
+print("clean_iex_data")
 # Get Data
 df = pd.read_csv("./iex/mintue_trade_data.csv", na_values=[-1])
 
@@ -36,3 +37,5 @@ date_df = pd.DataFrame({"date_col": df.date, "stock_price_col" : df.average})
 
 # save smaller df to a pickle
 fastparquet.write("date_iex_data.parquet", date_df)
+
+print("--End--")

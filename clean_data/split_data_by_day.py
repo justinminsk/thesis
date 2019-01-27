@@ -7,6 +7,9 @@ import numpy as np
 from google.cloud import storage
 from dateutil.parser import *
 
+print("--Start--")
+print("spilt_data_by_day")
+
 # get minute by minute list 
 start = parse("2018-12-11") # 2018-12-12  09:29:00 
 end = parse("2019-01-24") # 2019-01-23  16:00:00
@@ -39,8 +42,10 @@ df = df.drop("id_str", 1)
 
 del user_df, date_df
 
-for i in range(1, len(dates_list)-1):
+for i in tqdm(range(1, len(dates_list)-1)):
     prev_date = dates_list[i - 1]
     date = dates_list[i]
     temp_df = df.loc[(df["created_at"] > prev_date) & (df["created_at"] < date)]
     temp_df.to_csv("./day_data/data",date,".csv")
+
+print("--End--")

@@ -2,6 +2,7 @@
 gsutil -m cp -r gs://jminsk_thesis/en_tweets .
 
 python3 clean_iex_data.py
+
 python3 bq_to_user_list.py
 
 gsutil cp iex_clean.parquet gs://jminsk_thesis/iex_data/iex_clean.parquet
