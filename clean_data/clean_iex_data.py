@@ -5,7 +5,7 @@ from dateutil.parser import *
 
 
 # Get Data
-df = pd.read_csv("~/repo/thesis/iex/mintue_trade_data.csv", na_values=[-1])
+df = pd.read_csv("./iex/mintue_trade_data.csv", na_values=[-1])
 
 # Get date and  minute to timestamps
 df.date = df.date.astype(str) + " " + df.minute
