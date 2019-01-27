@@ -27,8 +27,7 @@ final_df = pd.DataFrame()
 
 for blob in tqdm(blob_list):
     download_blob("jminsk_thesis", blob.name, "./temp.parquet")
-    pq = fastparquet.ParquetFile("./temp.parquet")
-    df = pq.to_pandas()
+    df = pd.read_parquet('temp.parquet', engine='fastparquet')
 
     final_df = pd.concat([final_df, df]).fillna(0).to_sparse(fill_value=0)
 
