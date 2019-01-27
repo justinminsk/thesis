@@ -37,5 +37,5 @@ Uses spark to get final cleaned set of data
 
 ```sudo apt update;
 sudo apt install python3-pip;
-sudo pip3 install -U pandas matplotlib seaborn scikit-learn tweepy iexfinance pandas-gbq nltk google-cloud-storage fastparquet tqdm glob pyspark;
+sudo pip3 install -U pandas matplotlib seaborn scikit-learn tweepy iexfinance pandas-gbq nltk google-cloud-storage fastparquet tqdm pyspark;
 sudo pip3 install --upgrade google-cloud-storage colorama;```
