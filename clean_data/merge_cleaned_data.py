@@ -22,11 +22,11 @@ storage_client = storage.Client()
 bucket = storage_client.get_bucket("jminsk_thesis")
 
 blob_list = bucket.list_blobs()
-print(blob_list)
 
 final_df = pd.DataFrame()
 
 for blob in tqdm(blob_list):
+    print(blob.name)
     download_blob("jminsk_thesis", blob.name, "./temp.parquet")
     df = pd.read_parquet('temp.parquet', engine='fastparquet')
 
