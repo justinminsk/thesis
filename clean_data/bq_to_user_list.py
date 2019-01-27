@@ -30,6 +30,8 @@ print(df.shape)
 
 df = df.id_str.value_counts()
 
+df.id_str = df.reset_index()
+
 print(df)
 print(df.head())
 print(df.shape)
