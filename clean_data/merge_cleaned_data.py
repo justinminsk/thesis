@@ -21,7 +21,7 @@ def download_blob(bucket_name, source_blob_name, destination_file_name):
 storage_client = storage.Client()
 bucket = storage_client.get_bucket("jminsk_thesis")
 
-blob_list = bucket.list_blobs(prefix="data2018-12-12")
+blob_list = bucket.list_blobs(prefix="tweeterdata/data2018-12-12")
 
 final_df = pd.DataFrame()
 
