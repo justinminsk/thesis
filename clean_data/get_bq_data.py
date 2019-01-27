@@ -161,16 +161,13 @@ df = pd.io.gbq.read_gbq(query, project_id="jminsk-thesis", dialect="standard")
 
 print("BigQuery Data is Loaded")
 
-# get rid of date/times that are not part of the minute by minute price data
-if len(df.index) > 0: 
-    df.loc[:,'date_col'] = df.created_at
-    df.date_col = df.date_col.map(lambda x: x.replace(second=0, microsecond=0))
-    df = pd.merge(df, date_df, on="date_col", how="left")
-    df = df.drop("date_col", 1)
-    df = pd.merge(df, user_df, on="id_str", how="left")
-    df = df.drop("id_str", 1)
-else:
-    continue 
+# get rid of date/times that are not part of the minute by minute price data 
+df.loc[:,'date_col'] = df.created_at
+df.date_col = df.date_col.map(lambda x: x.replace(second=0, microsecond=0))
+df = pd.merge(df, date_df, on="date_col", how="left")
+df = df.drop("date_col", 1)
+df = pd.merge(df, user_df, on="id_str", how="left")
+df = df.drop("id_str", 1)
 
 print("Data is Merged")
 
