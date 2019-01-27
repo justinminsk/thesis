@@ -1,3 +1,4 @@
+import fastparquet
 import pandas as pd 
 import numpy as np
 from dateutil.parser import *
@@ -28,10 +29,10 @@ df = df.fillna(method="ffill")
 df = df.dropna()
 
 # Save all data to a pickle
-df.to_pickle("./iex_clean.pkl")
+fastparquet.write("iex_clean.parquet", df)
 
 # create a smaller dataframe to add to twitter and wallstreet journal
 date_df = pd.DataFrame({"date_col": df.date, "stock_price_col" : df.average})
 
 # save smaller df to a pickle
-date_df.to_pickle("./date_iex_data.pkl")
+fastparquet.write("date_iex_data.parquet", date_df)
