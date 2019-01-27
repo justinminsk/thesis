@@ -26,7 +26,7 @@ blob_list = bucket.list_blobs()
 final_df = pd.DataFrame()
 
 for blob in tqdm(blob_list):
-    download_blob("jminsk_thesis", blob.name, "temp.parquet")
+    download_blob("jminsk_thesis", blob.name, "./temp.parquet")
     pq = fastparquet.ParquetFile("temp.parquet")
     df = pq.to_pandas()
 
