@@ -33,6 +33,8 @@ df.columns = ["created_at", "id_str", "text", "truncated", "verified", "follower
 # user_df = pd.read_parquet("user_list.parquet", engine="fastparquet")
 date_df = pd.read_parquet("date_iex_data.parquet", engine="fastparquet")
 
+print("Data Imported")
+
 df.created_at = df.created_at.apply(parse)
 df.loc[:,'date_col'] = df.created_at
 date_df['date_col'] = date_df['date_col'].tz_localize(None)
@@ -41,6 +43,8 @@ df = pd.merge(df, date_df, on="date_col", how="left")
 df = df.drop("date_col", 1)
 # df = pd.merge(df, user_df, on="id_str", how="left")
 # df = df.drop("id_str", 1)
+
+print("Data Merged")
 
 del date_df # user_df
 
