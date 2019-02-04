@@ -42,7 +42,7 @@ df = df.drop("date_col", 1)
 # df = pd.merge(df, user_df, on="id_str", how="left")
 # df = df.drop("id_str", 1)
 
-del user_df, date_df
+del date_df # user_df
 
 for i in tqdm(range(1, len(dates_list)-1)):
     prev_date = dates_list[i - 1]
