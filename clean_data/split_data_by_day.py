@@ -30,7 +30,7 @@ df = pd.DataFrame(comb_np_array)
 
 df.columns = ["created_at", "id_str", "text", "truncated", "verified", "followers_count", "favourites_count"]
 
-user_df = pd.read_parquet("user_list.parquet", engine="fastparquet")
+# user_df = pd.read_parquet("user_list.parquet", engine="fastparquet")
 date_df = pd.read_parquet("date_iex_data.parquet", engine="fastparquet")
 
 df.created_at = df.created_at.apply(parse)
@@ -39,8 +39,8 @@ date_df['date_col'] = date_df['date_col'].tz_localize(None)
 df.date_col = df.date_col.map(lambda x: x.replace(second=0, microsecond=0))
 df = pd.merge(df, date_df, on="date_col", how="left")
 df = df.drop("date_col", 1)
-df = pd.merge(df, user_df, on="id_str", how="left")
-df = df.drop("id_str", 1)
+# df = pd.merge(df, user_df, on="id_str", how="left")
+# df = df.drop("id_str", 1)
 
 del user_df, date_df
 
