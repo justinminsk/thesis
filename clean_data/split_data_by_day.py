@@ -40,7 +40,7 @@ df.loc[:,'date_col'] = df.created_at
 
 df.date_col = df.date_col.map(lambda x: x.replace(second=0, microsecond=0))
 
-df = pd.concat([df, date_df], sort=True, key=["date_col"])
+df = pd.concat([df, date_df], sort=True)
 df = df.drop("date_col", 1)
 
 df.created_at = df.created_at.tz_localize(None)
