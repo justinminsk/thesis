@@ -46,12 +46,13 @@ def build_pipeline():
 	stringind = [StringIndexer(inputCol="id_str", outputCol="id_str_idx")]
 	onehot = [OneHotEncoder(inputCol="id_str_idx", outputCol="id_str_oh")]
 	assembler = [VectorAssembler(inputCols=input_cols, outputCol='features')]
-	dt = [DecisionTreeRegressor(maxDepth=10, predictionCol="stock_price_col")]
+	dt = [DecisionTreeRegressor(maxDepth=25, predictionCol="stock_price_col")]
 	pipeline = Pipeline(stages=tokenizer+ngrams+cv+idf+binarizer1+binarizer2+stringind+onehot+assembler+dt)
 	return pipeline
 
 def main(sqlc,input_dir,loaded_model=None):
 	print('retrieving data from {}'.format(input_dir))
+	# TODO: Figure out how to train with a few days then test on a few
 	if not loaded_model:
 		train_set = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true').load(input_dir+'en_tweets_000000000000.csv')
 	test_set = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true').load(input_dir+'en_tweets_000000000001.csv')
