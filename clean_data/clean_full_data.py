@@ -34,8 +34,8 @@ schema = StructType([
     StructField("C", StringType())
 ])
 """
-# "created_at",
-input_cols = ["id_str_idx", '1_tfidf', "2_tfidf", "3_tfidf", "4_tfidf", "5_tfidf", "bi_truncated", "bi_verified", "followers_count", "favourites_count"]
+# "created_at", "id_str_oh", "bi_truncated", "bi_verified", "followers_count", "favourites_count"
+input_cols = ['1_tfidf', "2_tfidf", "3_tfidf", "4_tfidf", "5_tfidf"]
 
 def pre_processing(column):
     first_process = re.sub(combined_pat, '', column)
