@@ -68,10 +68,10 @@ def main(sqlc,input_dir,loaded_model=None):
 		train_set = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true').load(input_dir+'data2018-12-12 00:00:00.csv')
 	test_set = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true').load(input_dir+'data2018-12-13 00:00:00.csv')
 	print('preprocessing data...')
-	reg_replaceUdf = f.udf(pre_processing, t.StringType())
+	reg_replaceUdf = f.udf(pre_processing, StringType())
 	if not loaded_model:
-		train_set = train_set.withColumn('text', reg_replaceUdf(f.col('text')))
-	test_set = test_set.withColumn('text', reg_replaceUdf(f.col('text')))
+		train_set = train_set.withColumn('text', reg_replaceUdf(train_set['text']))
+	test_set = test_set.withColumn('text', reg_replaceUdf(test_set['text']))
 	if not loaded_model:
 		pipeline = build_pipeline()
 		print('training...')
