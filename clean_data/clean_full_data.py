@@ -13,9 +13,9 @@ from pyspark.ml.regression import DecisionTreeRegressor
 from pyspark.ml import PipelineModel
 
 
-inputdir = "./day_data"
-outputfile = "final.csv"
-modeldir = "./model"
+inputdir = sys.argv[1]
+outputfile = sys.argv[2]
+modeldir = sys.argv[3]
 
 pat1 = r'@[A-Za-z0-9_]+'
 pat2 = r'https?://[^ ]+'
