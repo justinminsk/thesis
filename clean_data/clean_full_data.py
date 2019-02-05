@@ -55,8 +55,9 @@ def build_pipeline():
 	stringind = [StringIndexer(inputCol="id_str", outputCol="id_str_idx")]
 	onehot = [OneHotEncoder(inputCol="id_str_idx", outputCol="id_str_oh")]
 	assembler = [VectorAssembler(inputCols=input_cols, outputCol='features')]
-	dt = [DecisionTreeRegressor(maxDepth=25, predictionCol="stock_price_col")]
-	pipeline = Pipeline(stages=tokenizer+ngrams+cv+idf+binarizer1+binarizer2+stringind+onehot+assembler+dt)
+	# dt = [DecisionTreeRegressor(maxDepth=25, predictionCol="stock_price_col")]
+	# +dt
+	pipeline = Pipeline(stages=tokenizer+ngrams+cv+idf+binarizer1+binarizer2+stringind+onehot+assembler)
 	return pipeline
 
 def main(sqlc,input_dir,loaded_model=None):
@@ -75,6 +76,7 @@ def main(sqlc,input_dir,loaded_model=None):
 		pipeline = build_pipeline()
 		print('training...')
 		model = pipeline.fit(train_set)
+		model.show(10)
 	else:
 		model = loaded_model
 	print('making predictions on test data...')
