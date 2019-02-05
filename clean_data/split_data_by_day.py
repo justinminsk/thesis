@@ -50,6 +50,8 @@ print("Data Merged")
 
 del date_df # user_df
 
+df = df.fillna(0)
+
 for i in tqdm(range(1, len(dates_list)-1)):
     prev_date = dates_list[i - 1]
     date = dates_list[i]
