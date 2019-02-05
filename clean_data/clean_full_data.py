@@ -2,6 +2,8 @@ import sys
 import pyspark as ps
 import warnings
 import re
+from pyspark.sql.types import StructType, StructField
+from pyspark.sql.types import DoubleType, IntegerType, StringType, BooleanType
 from pyspark.sql import functions as f
 from pyspark.sql import types as t
 from pyspark.sql.types import StringType
@@ -25,8 +27,14 @@ negations_dic = {"isn't":"is not", "aren't":"are not", "wasn't":"was not", "were
                 "can't":"can not","couldn't":"could not","shouldn't":"should not","mightn't":"might not",
                 "mustn't":"must not"}
 neg_pattern = re.compile(r'\b(' + '|'.join(negations_dic.keys()) + r')\b')
+"""
+schema = StructType([
+    StructField("A", IntegerType()),
+    StructField("B", DoubleType()),
+    StructField("C", StringType())
+])
+"""
 input_cols = ["created_at", "id_str_oh", '1_tfidf', "2_tfidf", "3_tfidf", "4_tfidf", "5_tfidf", "bi_truncated", "bi_verified", "followers_count", "favourites_count"]
-
 
 def pre_processing(column):
     first_process = re.sub(combined_pat, '', column)
@@ -54,8 +62,8 @@ def main(sqlc,input_dir,loaded_model=None):
 	print('retrieving data from {}'.format(input_dir))
 	# TODO: Figure out how to train with a few days then test on a few
 	if not loaded_model:
-		train_set = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true').load(input_dir+'en_tweets_000000000000.csv')
-	test_set = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true').load(input_dir+'en_tweets_000000000001.csv')
+		train_set = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true').load(input_dir+'data2018*.csv')
+	test_set = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true').load(input_dir+'data2019*.csv')
 	print('preprocessing data...')
 	reg_replaceUdf = f.udf(pre_processing, t.StringType())
 	if not loaded_model:
@@ -69,8 +77,7 @@ def main(sqlc,input_dir,loaded_model=None):
 		model = loaded_model
 	print('making predictions on test data...')
 	predictions = model.transform(test_set)
-	accuracy = predictions.filter(predictions.label == predictions.prediction).count() / float(test_set.count())
-	return model, predictions, accuracy
+	return model, predictions
 
 
 if __name__=="__main__":
@@ -83,19 +90,11 @@ if __name__=="__main__":
 	except ValueError:
 	    warnings.warn('SparkContext already exists in this scope')
 	# build pipeline, fit the model and retrieve the outputs by running main() function
-	pipelineFit, predictions, accuracy = main(sqlContext,inputdir)
+	pipelineFit, predictions = main(sqlContext,inputdir)
 	print('predictions finished!')
-	print('accuracy on test data is {}'.format(accuracy))
-	# select the original target label 'sentiment', 'text' and 'label' created by label_stringIdx in the pipeline
-	# model predictions. Save it as a single CSV file to a destination specified by the second command line argument
 	print('saving predictions to {}'.format(outputfile))
 	predictions.select(predictions['stock_price_col'],predictions['text'],predictions['prediction']).coalesce(1).write.mode("overwrite").format("com.databricks.spark.csv").option("header", "true").csv(outputfile)
 	# save the trained model to destination specified by the third command line argument
 	print('saving model to {}'.format(modeldir))
 	pipelineFit.save(modeldir)
-	# Load the saved model and make another predictions on the same test set
-	# to check if the model was properly saved
-	loadedModel = PipelineModel.load(modeldir)
-	_, _, loaded_accuracy = main(sqlContext,inputdir,loadedModel)
-	print('accuracy with saved model on test data is {}'.format(loaded_accuracy))
 	sc.stop()
