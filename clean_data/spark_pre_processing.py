@@ -37,20 +37,6 @@ def pre_processing(column):
     result = re.sub(r'[^A-Za-z ]','',fourth_process)
     return result.strip()
 
-def main(sqlc,input_dir,loaded_model=None):
-	print('retrieving data from {}'.format(input_dir))
-	# TODO: Figure out how to train with a few days then test on a few
-	# might need to replace csv with com.databricks.spark.csv
-	if not loaded_model:
-		train_set = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true').load(input_dir+'data2018-12-12 00:00:00.csv')
-	test_set = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true').load(input_dir+'data2018-12-13 00:00:00.csv')
-	print('preprocessing data...')
-	reg_replaceUdf = f.udf(pre_processing, t.StringType())
-	if not loaded_model:
-		train_set = train_set.withColumn('text', reg_replaceUdf(f.col('text')))
-	test_set = test_set.withColumn('text', reg_replaceUdf(f.col('text')))
-    train_set.show(10)
-
 
 if __name__=="__main__":
 	# create a SparkContext while checking if there is already SparkContext created
@@ -61,6 +47,9 @@ if __name__=="__main__":
 	    print('Created a SparkContext')
 	except ValueError:
 	    warnings.warn('SparkContext already exists in this scope')
-	# build pipeline, fit the model and retrieve the outputs by running main() function
-	pipelineFit, predictions = main(sqlContext,inputdir)
+	train_set = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true').load(input_dir+'data2018-12-12 00:00:00.csv')
+    print('preprocessing data...')
+    reg_replaceUdf = f.udf(pre_processing, t.StringType())
+    train_set = train_set.withColumn('text', reg_replaceUdf(f.col('text')))
+    train_set.show(10)
 	sc.stop()
