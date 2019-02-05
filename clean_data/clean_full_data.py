@@ -63,8 +63,8 @@ def main(sqlc,input_dir,loaded_model=None):
 	# TODO: Figure out how to train with a few days then test on a few
 	# might need to replace csv with com.databricks.spark.csv
 	if not loaded_model:
-		train_set = sqlContext.read.format('csv').options(header='true', inferschema='true').load(input_dir+'data2018*.csv')
-	test_set = sqlContext.read.format('csv').options(header='true', inferschema='true').load(input_dir+'data2019*.csv')
+		train_set = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true').load(input_dir+'data2018-12-12 00:00:00.csv')
+	test_set = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true').load(input_dir+'data2018-12-13 00:00:00.csv')
 	print('preprocessing data...')
 	reg_replaceUdf = f.udf(pre_processing, t.StringType())
 	if not loaded_model:
@@ -94,7 +94,7 @@ if __name__=="__main__":
 	pipelineFit, predictions = main(sqlContext,inputdir)
 	print('predictions finished!')
 	print('saving predictions to {}'.format(outputfile))
-	predictions.select(predictions['stock_price_col'],predictions['text'],predictions['prediction']).coalesce(1).write.mode("overwrite").format("csv").option("header", "true").csv(outputfile)
+	predictions.select(predictions['stock_price_col'],predictions['text'],predictions['prediction']).coalesce(1).write.mode("overwrite").format("com.databricks.spark.csv").option("header", "true").csv(outputfile)
 	# save the trained model to destination specified by the third command line argument
 	print('saving model to {}'.format(modeldir))
 	pipelineFit.save(modeldir)
