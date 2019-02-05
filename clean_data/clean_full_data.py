@@ -50,14 +50,14 @@ def build_pipeline():
 	ngrams = [NGram(n=i, inputCol='words', outputCol='{0}_grams'.format(i)) for i in range(1,5)]
 	cv = [CountVectorizer(vocabSize=100000, inputCol='{0}_grams'.format(i), outputCol='{0}_tf'.format(i)) for i in range(1,5)]
 	idf = [IDF(inputCol='{0}_tf'.format(i), outputCol='{0}_tfidf'.format(i), minDocFreq=5) for i in range(1,5)]
-	binarizer1 = [Binarizer(threshold=1.0, inputCol="truncated", outputCol="bi_truncated")]
-	binarizer2 = [Binarizer(threshold=1.0, inputCol="verified", outputCol="bi_verified")]
-	stringind = [StringIndexer(inputCol="id_str", outputCol="id_str_idx")]
-	onehot = [OneHotEncoder(inputCol="id_str_idx", outputCol="id_str_oh")]
+	# binarizer1 = [Binarizer(threshold=1.0, inputCol="truncated", outputCol="bi_truncated")]
+	# binarizer2 = [Binarizer(threshold=1.0, inputCol="verified", outputCol="bi_verified")]
+	# stringind = [StringIndexer(inputCol="id_str", outputCol="id_str_idx")]
+	# onehot = [OneHotEncoder(inputCol="id_str_idx", outputCol="id_str_oh")]
 	assembler = [VectorAssembler(inputCols=input_cols, outputCol='features')]
-	# dt = [DecisionTreeRegressor(maxDepth=25, predictionCol="stock_price_col")]
-	# +dt
-	pipeline = Pipeline(stages=tokenizer+ngrams+cv+idf+binarizer1+binarizer2+stringind+onehot+assembler)
+	dt = [DecisionTreeRegressor(maxDepth=25, predictionCol="stock_price_col")]
+	# binarizer1+binarizer2+stringind+onehot
+	pipeline = Pipeline(stages=tokenizer+ngrams+cv+idf+assembler+dt)
 	return pipeline
 
 def main(sqlc,input_dir,loaded_model=None):
