@@ -4,7 +4,6 @@ import glob
 from tqdm import tqdm
 import pandas as pd
 import numpy as np
-from google.cloud import storage
 from dateutil.parser import *
 
 print("--Start--")
@@ -54,7 +53,7 @@ del date_df # user_df
 for i in tqdm(range(1, len(dates_list)-1)):
     prev_date = dates_list[i - 1]
     date = dates_list[i]
-    filename = "day_data/data",date,".csv"
+    filename = "day_data/data"+str(date)+".csv"
     temp_df = df.loc[(df["created_at"] > prev_date) & (df["created_at"] < date)]
     temp_df.to_csv(filename)
 
