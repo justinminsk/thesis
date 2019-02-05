@@ -70,8 +70,8 @@ def main(sqlc,input_dir,loaded_model=None):
 	print('preprocessing data...')
 	reg_replaceUdf = f.udf(pre_processing, StringType())
 	if not loaded_model:
-		train_set = train_set.withColumn('text', reg_replaceUdf(train_set['text']))
-	test_set = test_set.withColumn('text', reg_replaceUdf(test_set['text']))
+		train_set = train_set.withColumn('text', reg_replaceUdf())
+	test_set = test_set.withColumn('text', reg_replaceUdf())
 	if not loaded_model:
 		pipeline = build_pipeline()
 		print('training...')
