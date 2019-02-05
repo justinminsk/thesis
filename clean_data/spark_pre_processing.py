@@ -48,9 +48,9 @@ if __name__=="__main__":
     except ValueError:
         warnings.warn('SparkContext already exists in this scope')
     train_set = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true').load(inputdir+'data2018-12-12 00:00:00.csv')
-    train_set.show(10)
+    train_set.limit(10).toPandas().head(10)
     print('preprocessing data...')
     reg_replaceUdf = f.udf(pre_processing, t.StringType())
     train_set = train_set.withColumn('text', reg_replaceUdf(f.col('text')))
-    train_set.show(10)
+    train_set.limit(10).toPandas().head(10)
     sc.stop()
