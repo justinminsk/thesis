@@ -52,9 +52,10 @@ print("Data Merged")
 del date_df # user_df
 
 for i in tqdm(range(1, len(dates_list)-1)):
+    filename = "day_data/data",date,".csv"
     prev_date = dates_list[i - 1]
     date = dates_list[i]
     temp_df = df.loc[(df["created_at"] > prev_date) & (df["created_at"] < date)]
-    temp_df.to_csv("./day_data/data",date,".csv")
+    temp_df.to_csv(filename)
 
 print("--End--")
