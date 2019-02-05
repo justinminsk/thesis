@@ -27,13 +27,6 @@ negations_dic = {"isn't":"is not", "aren't":"are not", "wasn't":"was not", "were
                 "can't":"can not","couldn't":"could not","shouldn't":"should not","mightn't":"might not",
                 "mustn't":"must not"}
 neg_pattern = re.compile(r'\b(' + '|'.join(negations_dic.keys()) + r')\b')
-"""
-schema = StructType([
-    StructField("A", IntegerType()),
-    StructField("B", DoubleType()),
-    StructField("C", StringType())
-])
-"""
 input_cols = ["created_at", "id_str_oh", '1_tfidf', "2_tfidf", "3_tfidf", "4_tfidf", "5_tfidf", "bi_truncated", "bi_verified", "followers_count", "favourites_count"]
 
 def pre_processing(column):
@@ -43,20 +36,6 @@ def pre_processing(column):
     fourth_process = neg_pattern.sub(lambda x: negations_dic[x.group()], third_process)
     result = re.sub(r'[^A-Za-z ]','',fourth_process)
     return result.strip()
-
-def build_pipeline():
-	tokenizer = [Tokenizer(inputCol='text',outputCol='words')]
-	ngrams = [NGram(n=i, inputCol='words', outputCol='{0}_grams'.format(i)) for i in range(1,5)]
-	cv = [CountVectorizer(vocabSize=100000, inputCol='{0}_grams'.format(i), outputCol='{0}_tf'.format(i)) for i in range(1,5)]
-	idf = [IDF(inputCol='{0}_tf'.format(i), outputCol='{0}_tfidf'.format(i), minDocFreq=5) for i in range(1,5)]
-	binarizer1 = [Binarizer(threshold=1.0, inputCol="truncated", outputCol="bi_truncated")]
-	binarizer2 = [Binarizer(threshold=1.0, inputCol="verified", outputCol="bi_verified")]
-	stringind = [StringIndexer(inputCol="id_str", outputCol="id_str_idx")]
-	onehot = [OneHotEncoder(inputCol="id_str_idx", outputCol="id_str_oh")]
-	assembler = [VectorAssembler(inputCols=input_cols, outputCol='features')]
-	dt = [DecisionTreeRegressor(maxDepth=25, predictionCol="stock_price_col")]
-	pipeline = Pipeline(stages=tokenizer+ngrams+cv+idf+binarizer1+binarizer2+stringind+onehot+assembler+dt)
-	return pipeline
 
 def main(sqlc,input_dir,loaded_model=None):
 	print('retrieving data from {}'.format(input_dir))
@@ -70,15 +49,7 @@ def main(sqlc,input_dir,loaded_model=None):
 	if not loaded_model:
 		train_set = train_set.withColumn('text', reg_replaceUdf(f.col('text')))
 	test_set = test_set.withColumn('text', reg_replaceUdf(f.col('text')))
-	if not loaded_model:
-		pipeline = build_pipeline()
-		print('training...')
-		model = pipeline.fit(train_set)
-	else:
-		model = loaded_model
-	print('making predictions on test data...')
-	predictions = model.transform(test_set)
-	return model, predictions
+    train_set.show(10)
 
 
 if __name__=="__main__":
@@ -92,10 +63,4 @@ if __name__=="__main__":
 	    warnings.warn('SparkContext already exists in this scope')
 	# build pipeline, fit the model and retrieve the outputs by running main() function
 	pipelineFit, predictions = main(sqlContext,inputdir)
-	print('predictions finished!')
-	print('saving predictions to {}'.format(outputfile))
-	predictions.select(predictions['stock_price_col'],predictions['text'],predictions['prediction']).coalesce(1).write.mode("overwrite").format("com.databricks.spark.csv").option("header", "true").csv(outputfile)
-	# save the trained model to destination specified by the third command line argument
-	print('saving model to {}'.format(modeldir))
-	pipelineFit.save(modeldir)
 	sc.stop()
