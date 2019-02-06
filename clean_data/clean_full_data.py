@@ -27,13 +27,7 @@ negations_dic = {"isn't":"is not", "aren't":"are not", "wasn't":"was not", "were
                 "can't":"can not","couldn't":"could not","shouldn't":"should not","mightn't":"might not",
                 "mustn't":"must not"}
 neg_pattern = re.compile(r'\b(' + '|'.join(negations_dic.keys()) + r')\b')
-"""
-schema = StructType([
-    StructField("A", IntegerType()),
-    StructField("B", DoubleType()),
-    StructField("C", StringType())
-])
-"""
+
 input_cols = ["created_at", "id_str_oh", '1_tfidf', "2_tfidf", "3_tfidf", "4_tfidf", "5_tfidf", "bi_truncated", "bi_verified", "followers_count", "favourites_count"]
 
 def pre_processing(column):
