@@ -12,6 +12,8 @@ from dateutil.parser import *
 print("--Start--")
 print("spilt_data_by_day")
 
+nltk.download('punkt')
+
 pat1 = r'@[A-Za-z0-9_]+'
 pat2 = r'https?://[^ ]+'
 combined_pat = r'|'.join((pat1,pat2))
