@@ -44,9 +44,17 @@ def build_pipeline():
     pipeline = Pipeline(stages=tokenizer+ngrams+cv+idf+tweetvect+ss+assembler)
     return pipeline
 
-def main(sqlc,input_dir,loaded_model=None):
-	print('Retrieving Data from {}'.format(input_dir))
-	df = sqlContext.read.parquet(input_dir+"full_data.parquet")
+if __name__=="__main__":
+	# create a SparkContext while checking if there is already SparkContext created
+	try:
+	    sc = ps.SparkContext()
+	    sc.setLogLevel("ERROR")
+	    sqlContext = ps.sql.SQLContext(sc)
+	    print('Created a SparkContext')
+	except ValueError:
+	    warnings.warn('SparkContext already exists in this scope')
+	print('Retrieving Data from {}'.format(inputdir))
+	df = sqlContext.read.parquet(inputdir+"full_data.parquet")
 	reg_replaceUdf = f.udf(pre_processing, t.StringType())
 	df = df.withColumn('tweet', reg_replaceUdf(df.text))
 	pipeline = build_pipeline()
@@ -58,17 +66,4 @@ def main(sqlc,input_dir,loaded_model=None):
 	df.select([column for column in df.columns if column in select_list])
 	df.show(5)
 	df.write.parquet(outputdir+"processed_twitter_data.parquet")
-
-
-if __name__=="__main__":
-	# create a SparkContext while checking if there is already SparkContext created
-	try:
-	    sc = ps.SparkContext()
-	    sc.setLogLevel("ERROR")
-	    sqlContext = ps.sql.SQLContext(sc)
-	    print('Created a SparkContext')
-	except ValueError:
-	    warnings.warn('SparkContext already exists in this scope')
-	# build pipeline, fit the model and retrieve the outputs by running main() function
-	main(sqlContext,inputdir)
 	sc.stop()
