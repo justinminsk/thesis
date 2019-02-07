@@ -51,7 +51,6 @@ df.loc[:,'date_col'] = df.index
 print("Resampled To Get Tweet Text Per Minute")
 
 df = df.merge(date_df, how="left", on="date_col")
-df = df.drop("date_col", 1)
 
 print("Data Merged")
 
@@ -66,7 +65,7 @@ for i in tqdm(range(1, len(dates_list)-1)):
     prev_date = dates_list[i - 1]
     date = dates_list[i]
     filename = "day_data/data"+str(date)+".parquet"
-    temp_df = df.loc[(df.index > prev_date) & (df.index < date)]
+    temp_df = df.loc[(df["date_col"] > prev_date) & (df["date_col"] < date)]
     fastparquet.write(filename, temp_df)
 
 print("--End--")
