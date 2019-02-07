@@ -34,7 +34,7 @@ def pre_processing(column):
     return result.strip()
 
 def build_pipeline():
-    tokenizer = [Tokenizer(inputCol='tweet',outputCol='words')]
+    tokenizer = [Tokenizer(inputCol='text',outputCol='words')]
     ngrams = [NGram(n=i, inputCol='words', outputCol='{0}_grams'.format(i)) for i in range(1,6)]
     cv = [CountVectorizer(vocabSize=100000, inputCol='{0}_grams'.format(i), outputCol='{0}_tf'.format(i)) for i in range(1,6)]
     idf = [IDF(inputCol='{0}_tf'.format(i), outputCol='{0}_tfidf'.format(i), minDocFreq=5) for i in range(1,6)]
