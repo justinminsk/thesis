@@ -48,7 +48,7 @@ def main(sqlc,input_dir,loaded_model=None):
 	print('Retrieving Data from {}'.format(input_dir))
 	df = sqlContext.read.parquet(input_dir+"full_data.parquet")
 	reg_replaceUdf = f.udf(pre_processing, t.StringType())
-	df = df.withColumn('tweet', reg_replaceUdf(df.text)))
+	df = df.withColumn('tweet', reg_replaceUdf(df.text))
 	pipeline = build_pipeline()
 	print('Get Feature Vectors')
 	pipeline = build_pipeline()
