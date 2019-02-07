@@ -39,7 +39,7 @@ date_df = pd.read_parquet("date_iex_data.parquet", engine="fastparquet")
 print("Data Imported")
 
 df.created_at = df.created_at.apply(parse)
-df.created_at = df.created_at.map(lambda x: x.replace(tzinfo=None)).map(lambda x: x.replace(second=0, microsecond=0, tzinfo=None))
+df.created_at = df.created_at.map(lambda x: x.replace(second=0, microsecond=0, tzinfo=None))
 
 print("Changed DateTime to Minute By Minute")
 
