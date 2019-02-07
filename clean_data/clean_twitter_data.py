@@ -40,13 +40,14 @@ print("Data Imported")
 
 df.created_at = df.created_at.apply(parse)
 df.created_at = df.created_at.map(lambda x: x.replace(tzinfo=None)).map(lambda x: x.replace(second=0, microsecond=0, tzinfo=None))
-df.loc[:,'date_col'] = df.created_at
 
 print("Changed DateTime to Minute By Minute")
 
 df = df.set_index("created_at")
 
 df = df.resample("1Min").agg({"text" : " ".join, "tweet_count" : sum})
+
+df.loc[:,'date_col'] = df.created_at
 
 print("Resampled To Get Tweet Text Per Minute")
 
