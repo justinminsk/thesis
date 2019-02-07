@@ -56,7 +56,7 @@ if __name__=="__main__":
 	print('Retrieving Data from {}'.format(inputdir))
 	df = sqlContext.read.parquet(inputdir+"full_data.parquet")
 	reg_replaceUdf = f.udf(pre_processing, t.StringType())
-	df = df.withColumn('tweet', reg_replaceUdf(df.text))
+	# df = df.withColumn('tweet', reg_replaceUdf(df.text))
 	pipeline = build_pipeline()
 	print('Get Feature Vectors')
 	pipeline = build_pipeline()
