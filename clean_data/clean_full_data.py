@@ -4,7 +4,7 @@ import re
 from pyspark.sql import functions as f
 from pyspark.sql import types as t
 from pyspark.sql.types import StringType
-from pyspark.ml.feature import Tokenizer, NGram, CountVectorizer, IDF, VectorAssembler
+from pyspark.ml.feature import Tokenizer, NGram, CountVectorizer, IDF, VectorAssembler, StandardScaler
 from pyspark.ml import Pipeline
 from pyspark.ml import PipelineModel
 
@@ -24,7 +24,7 @@ negations_dic = {"isn't":"is not", "aren't":"are not", "wasn't":"was not", "were
                 "mustn't":"must not"}
 neg_pattern = re.compile(r'\b(' + '|'.join(negations_dic.keys()) + r')\b')
 
-input_cols = ["1_tfidf", "2_tfidf", "3_tfidf", "4_tfidf", "5_tfidf"]
+input_cols = ["1_tfidf", "2_tfidf", "3_tfidf", "4_tfidf", "5_tfidf", "ss_tweet_count"]
 
 def pre_processing(column):
     first_process = re.sub(combined_pat, '', column)
@@ -39,8 +39,9 @@ def build_pipeline():
 	ngrams = [NGram(n=i, inputCol='words', outputCol='{0}_grams'.format(i)) for i in range(1,6)]
 	cv = [CountVectorizer(vocabSize=100000, inputCol='{0}_grams'.format(i), outputCol='{0}_tf'.format(i)) for i in range(1,6)]
 	idf = [IDF(inputCol='{0}_tf'.format(i), outputCol='{0}_tfidf'.format(i), minDocFreq=5) for i in range(1,6)]
+	ss = [StandardScaler(inputCol="tweet_count", outputCol="ss_tweet_count")]
 	assembler = [VectorAssembler(inputCols=input_cols, outputCol='features')]
-	pipeline = Pipeline(stages=tokenizer+ngrams+cv+idf+assembler)
+	pipeline = Pipeline(stages=tokenizer+ngrams+cv+idf+ss+assembler)
 	return pipeline
 
 def main(sqlc,input_dir,loaded_model=None):
