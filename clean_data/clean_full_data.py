@@ -55,7 +55,7 @@ def main(sqlc,input_dir,loaded_model=None):
 	df = pipeline.fit(df)
 	select_list = ["created_at", "features", "stock_price_col"]
 	df.select([column for column in df.columns if column in select_list])
-	df.write.parquet("processed_full_data.parquet")
+	df.write.parquet("processed_twitter_data.parquet")
 
 
 if __name__=="__main__":

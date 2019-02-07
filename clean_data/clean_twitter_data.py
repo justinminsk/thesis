@@ -46,7 +46,7 @@ print("Changed DateTime to Minute By Minute")
 
 df = df.set_index("created_at")
 
-df = df.resample("1Min").sum()
+df = df.resample("1Min").agg({"text" : " ".join, "tweet_count" : sum})
 
 print("Resampled To Get Tweet Text Per Minute")
 
