@@ -10,8 +10,7 @@ from pyspark.ml import PipelineModel
 
 
 inputdir = "gs://jminsk_thesis/day_data/"
-outputfile = "gs://jminsk_thesis/result.csv"
-modeldir = "gs://jminsk_thesis/model"
+outputdir= "gs://jminsk_thesis/"
 
 pat1 = r'@[A-Za-z0-9_]+'
 pat2 = r'https?://[^ ]+'
@@ -54,9 +53,9 @@ def main(sqlc,input_dir,loaded_model=None):
 	pipeline = build_pipeline()
 	print('Get Feature Vectors')
 	df = pipeline.fit(df)
-	select_list = ["created_at", "features", "stock_price_col"]
+	select_list = ["date_col", "features", "stock_price_col"]
 	df.select([column for column in df.columns if column in select_list])
-	df.write.parquet("processed_twitter_data.parquet")
+	df.write.parquet(outputdir+"processed_twitter_data.parquet")
 
 
 if __name__=="__main__":
