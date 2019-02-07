@@ -13,24 +13,8 @@ IF DATA IS IN GCS
 OR
 
 1. `python3 clean_iex_data.py`
-1. `python3 bq_to_user_list.py`
-1. `python3 split_data_by_day.py.py`
-
-## clean_iex_data.py
-
-Makes the data used for one of the models and a second set of data with time and price
-
-## bq_to_user_list.py
-
-Gets a list with the count of how many times a user tweeted about Amazon
-
-## split_data_by_day.py
-
-splits data by day and appends price and user count
-
-## clean_full_data.py
-
-Uses spark to get final cleaned set of data
+1. `python3 clean_twitter_data.py`
+1. `python3 clean_full_data.py`
 
 
 #### Notes for Possible Dockerfile
