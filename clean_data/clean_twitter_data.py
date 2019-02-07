@@ -66,7 +66,7 @@ for i in tqdm(range(1, len(dates_list)-1)):
     prev_date = dates_list[i - 1]
     date = dates_list[i]
     filename = "day_data/data"+str(date)+".parquet"
-    temp_df = df.loc[(df["created_at"] > prev_date) & (df["created_at"] < date)]
+    temp_df = df.loc[(df.index > prev_date) & (df.index < date)]
     fastparquet.write(filename, temp_df)
 
 print("--End--")
