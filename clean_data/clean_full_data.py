@@ -34,27 +34,29 @@ def pre_processing(column):
     return result.strip()
 
 def build_pipeline():
-	tokenizer = [Tokenizer(inputCol='text',outputCol='words')]
-	ngrams = [NGram(n=i, inputCol='words', outputCol='{0}_grams'.format(i)) for i in range(1,6)]
-	cv = [CountVectorizer(vocabSize=100000, inputCol='{0}_grams'.format(i), outputCol='{0}_tf'.format(i)) for i in range(1,6)]
-	idf = [IDF(inputCol='{0}_tf'.format(i), outputCol='{0}_tfidf'.format(i), minDocFreq=5) for i in range(1,6)]
-	ss = [StandardScaler(inputCol="tweet_count", outputCol="ss_tweet_count")]
-	assembler = [VectorAssembler(inputCols=input_cols, outputCol='features')]
-	pipeline = Pipeline(stages=tokenizer+ngrams+cv+idf+ss+assembler)
-	return pipeline
+    tokenizer = [Tokenizer(inputCol='tweet',outputCol='words')]
+    ngrams = [NGram(n=i, inputCol='words', outputCol='{0}_grams'.format(i)) for i in range(1,6)]
+    cv = [CountVectorizer(vocabSize=100000, inputCol='{0}_grams'.format(i), outputCol='{0}_tf'.format(i)) for i in range(1,6)]
+    idf = [IDF(inputCol='{0}_tf'.format(i), outputCol='{0}_tfidf'.format(i), minDocFreq=5) for i in range(1,6)]
+    tweetvect = [VectorAssembler(inputCols=["tweet_count"], outputCol="vec_tweet_count")]
+    ss = [StandardScaler(inputCol="vec_tweet_count", outputCol="ss_tweet_count")]
+    assembler = [VectorAssembler(inputCols=input_cols, outputCol='features')]
+    pipeline = Pipeline(stages=tokenizer+ngrams+cv+idf+tweetvect+ss+assembler)
+    return pipeline
 
 def main(sqlc,input_dir,loaded_model=None):
 	print('Retrieving Data from {}'.format(input_dir))
-	# TODO: Figure out how to train with a few days then test on a few
-	# might need to replace csv with com.databricks.spark.csv
 	df = sqlContext.read.parquet(input_dir+"full_data.parquet")
 	reg_replaceUdf = f.udf(pre_processing, t.StringType())
-	df = df.withColumn('text', reg_replaceUdf(f.col('text')))
+	df = df.withColumn('tweet', reg_replaceUdf(df.text)))
 	pipeline = build_pipeline()
 	print('Get Feature Vectors')
-	df = pipeline.fit(df)
+	pipeline = build_pipeline()
+	pipelineFit = pipeline.fit(df)
+	df = pipelineFit.transform(df)
 	select_list = ["date_col", "features", "stock_price_col"]
 	df.select([column for column in df.columns if column in select_list])
+	df.show(5)
 	df.write.parquet(outputdir+"processed_twitter_data.parquet")
 
 
