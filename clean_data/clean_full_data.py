@@ -62,7 +62,9 @@ if __name__=="__main__":
 	pipelineFit = pipeline.fit(df)
 	df = pipelineFit.transform(df)
 	select_list = ["date_col", "features", "stock_price_col"]
-	df.select([column for column in df.columns if column in select_list])
+	df = df.select([column for column in df.columns if column in select_list])
 	print("Write to Parquet")
-	df.write.parquet(outputdir+"processed_twitter_data.parquet")
+	df.write.parquet(outputdir+"processed_twitter_pyspark")
+	pd_df = df.toPandas()
+	pd_df.to_parquet(outputdir+"processed_twitter_dataframe")
 	sc.stop()
