@@ -1,9 +1,11 @@
 import pyspark as ps
 import warnings
 import re
+import datetime
+import time
 from pyspark.sql import functions as f
 from pyspark.sql import types as t
-from pyspark.sql.types import StringType
+from pyspark.sql.types import StringType, TimestampType
 from pyspark.ml.feature import Tokenizer, NGram, CountVectorizer, IDF, VectorAssembler, StandardScaler
 from pyspark.ml import Pipeline
 from pyspark.ml import PipelineModel
@@ -65,6 +67,19 @@ if __name__=="__main__":
 	df = df.select([column for column in df.columns if column in select_list])
 	print("Write to Parquet")
 	df.write.parquet(outputdir+"processed_twitter_pyspark")
-	pd_df = df.toPandas()
-	pd_df.to_parquet(outputdir+"processed_twitter_dataframe")
+	dates = ("2018-01-01",  "2019-01-01")
+	date_from, date_to = [f.to_date(list(s)).cast(TimestampType()) for s in dates]
+	temp_df = df.where((df.date_col > date_from) & (df.date_col < date_to))
+	temp_df = temp_df.toPandas()
+	temp_df.to_parquet(outputdir+"processed_twitter_train_date")
+	dates = ("2018-12-31",  "2019-01-23")
+	date_from, date_to = [f.to_date(list(s)).cast(TimestampType()) for s in dates]
+	temp_df = df.where((df.date_col > date_from) & (df.date_col < date_to))
+	temp_df = temp_df.toPandas()
+	temp_df.to_parquet(outputdir+"processed_twitter_test_date")
+	dates = ("2019-01-22",  "2019-01-25")
+	date_from, date_to = [f.to_date(list(s)).cast(TimestampType()) for s in dates]
+	temp_df = df.where((df.date_col > date_from) & (df.date_col < date_to))
+	temp_df = temp_df.toPandas()
+	temp_df.to_parquet(outputdir+"processed_twitter_val_date")
 	sc.stop()
