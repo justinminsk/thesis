@@ -36,6 +36,5 @@ if __name__ == "__main__":
         date_from, date_to = [f.to_date(f.lit(s)).cast(TimestampType()) for s in dates]
         temp_df = df.where((df.date_col > date_from) & (df.date_col < date_to))
         temp_df = temp_df.toPandas()
-        print(temp_df.head())
         temp_df.to_parquet(outputdir+"processed_twitter_data"+str(date))
     sc.stop()
