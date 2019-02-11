@@ -1,13 +1,15 @@
 import datetime
 import time
 import warnings
+import fastparquet
 import pandas as pd
 import pyspark as ps
 from datetime import date
 from pyspark.sql import functions as f
 from pyspark.sql.types import StringType, TimestampType
 
-# gcloud dataproc clusters create twitter-spark --image-version 1.3 --master-machine-type n1-standard-8 --worker-machine-type n1-standard-8 --metadata 'PIP_PACKAGES=pandas==0.23.0 scipy==1.1.0' --initialization-actions gs://dataproc-initialization-actions/python/pip-install.sh 
+
+# gcloud dataproc clusters create twitter-spark --image-version 1.3 --master-machine-type n1-standard-8 --worker-machine-type n1-standard-8 --metadata 'PIP_PACKAGES=pandas==0.23.0 scipy==1.1.0 fastparquet' --initialization-actions gs://dataproc-initialization-actions/python/pip-install.sh 
 
 inputdir = "gs://jminsk_thesis/"
 outputdir= "gs://jminsk_thesis/"
@@ -36,5 +38,5 @@ if __name__ == "__main__":
         date_from, date_to = [f.to_date(f.lit(s)).cast(TimestampType()) for s in dates]
         temp_df = df.where((df.date_col > date_from) & (df.date_col < date_to))
         temp_df = temp_df.toPandas()
-        temp_df.to_parquet(outputdir+"processed_twitter_data"+str(date))
+        fastparquet.write(outputdir+"processed_twitter_data"+str(date), temp_df)
     sc.stop()
