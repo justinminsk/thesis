@@ -195,12 +195,12 @@ def plot_comparison(start_idx, length=100, train=True):
     
     if train:
         # Use training-data.
-        x = x_train_scaled
+        x = x_train
         y_true = y_train
         path = "train"
     else:
         # Use test-data.
-        x = x_test_scaled
+        x = x_test
         y_true = y_test
         path = "test"
     
