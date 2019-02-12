@@ -33,8 +33,8 @@ train = df[0:num_train]
 test = df[num_train:]
 
 y_scaler = MinMaxScaler()
-train = y_scaler.fit_transform(train[['target']])
-test = y_scaler.transform(test[['target']])
+train[["target"]] = y_scaler.fit_transform(train[['target']])
+test[["target"]] = y_scaler.transform(test[['target']])
 
 y_train = train.target.shift(-5).values[:-5]
 x_train = train.drop(["target"], axis=1).values[0:-5]
