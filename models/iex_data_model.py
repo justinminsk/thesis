@@ -107,7 +107,7 @@ model.add(Dense(1, activation='sigmoid'))
 
 optimizer = RMSprop(lr=1e-3)
 
-model.compile(loss='adam', optimizer=optimizer)
+model.compile(loss='mean_squared_error', optimizer=optimizer)
 
 logging.info(model.summary())
 
