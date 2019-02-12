@@ -32,16 +32,16 @@ num_train = int(train_split * len(df.target))
 train = df[0:num_train]
 test = df[num_train:]
 
-logging.info("Scaling Data")
-
-scaler = MinMaxScaler()
-train = pd.DataFrame(scaler.fit_transform(train), columns = df.columns)
-test = pd.DataFrame(scaler.fit_transform(test), columns = df.columns)
-
 y_train = train.target.shift(-5).values[:-5]
 x_train = train.drop(["target"], axis=1).values[0:-5]
 y_test = test.target.shift(-5).values[:-5]
 x_test = test.drop(["target"], axis=1).values[0:-5]
+
+logging.info("Scaling Data")
+
+scaler = MinMaxScaler()
+x_train = scaler.fit_transform(x_train)
+x_test = scaler.fit_transform(x_test)
 
 num_x_signals = x_train.shape[1]
 
@@ -84,9 +84,13 @@ sequence_length = 3 * 1440
 generator = batch_generator(batch_size=batch_size,
                             sequence_length=sequence_length)
 
+x_batch, y_batch = next(generator)
+
+print(x_batch.shape)
+print(y_batch.shape)
+
 validation_data = (np.expand_dims(x_test, axis=0),
                    np.expand_dims(y_test, axis=0))
-
 
 logging.info("Start Training Model")
 
@@ -115,7 +119,7 @@ def loss_mse_warmup(y_true, y_pred):
     # Ignore the "warmup" parts of the sequences
     # by taking slices of the tensors.
     y_true_slice = y_true[:, warmup_steps:, :]
-    y_pred_slice = y_pred[:, warmup_steps:]
+    y_pred_slice = y_pred[warmup_steps:]
 
     # These sliced tensors both have this shape:
     # [batch_size, sequence_length - warmup_steps, num_y_signals]
@@ -182,7 +186,8 @@ except Exception as error:
 result = model.evaluate(x=np.expand_dims(x_test, axis=0),
                         y=np.expand_dims(y_test, axis=0))
 
-logging.info("loss (test-set):", result)
+log_text = "loss (test-set):", result
+logging.info(log_text)
 
 def plot_comparison(start_idx, length=100, train=True):
     """
@@ -221,27 +226,28 @@ def plot_comparison(start_idx, length=100, train=True):
     # The output of the model is between 0 and 1.
     # Do an inverse map to get it back to the scale
     # of the original data-set.
-    y_pred_rescaled = y_scaler.inverse_transform(y_pred[0])
+    y_pred_rescaled = y_pred[0]
     
     # For each output-signal.
-    for signal in range(len(target_names)):
-        # Get the output-signal predicted by the model.
-        signal_pred = y_pred_rescaled[:, signal]
+    # Get the output-signal predicted by the model.
+    signal_pred = y_pred_rescaled[:]
         
-        # Get the true output-signal from the data-set.
-        signal_true = y_true[:, signal]
+    # Get the true output-signal from the data-set.
+    signal_true = y_true[:]
 
-        # Make the plotting-canvas bigger.
-        plt.figure(figsize=(15,5))
+    # Make the plotting-canvas bigger.
+    plt.figure(figsize=(15,5))
         
-        # Plot and compare the two signals.
-        plt.plot(signal_true, label='true')
-        plt.plot(signal_pred, label='pred')
+    # Plot and compare the two signals.
+    plt.plot(signal_true, label='true')
+    plt.plot(signal_pred, label='pred')
         
-        # Plot grey box for warmup-period.
-        p = plt.axvspan(0, warmup_steps, facecolor='black', alpha=0.15)
+    # Plot grey box for warmup-period.
+    p = plt.axvspan(0, warmup_steps, facecolor='black', alpha=0.15)
         
-        # Plot labels etc.
-        plt.ylabel(target_names[signal])
-        plt.legend()
-        plt.savefig(path+".png")
+    # Plot labels etc.
+    plt.ylabel("Price")
+    plt.legend()
+    plt.savefig(path+".png")
+
+plot_comparison(start_idx=50, length=1000, train=True)
