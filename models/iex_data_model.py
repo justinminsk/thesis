@@ -115,7 +115,7 @@ def loss_mse_warmup(y_true, y_pred):
     # Ignore the "warmup" parts of the sequences
     # by taking slices of the tensors.
     y_true_slice = y_true[:, warmup_steps:, :]
-    y_pred_slice = y_pred[:, warmup_steps:, :]
+    y_pred_slice = y_pred[:, warmup_steps:]
 
     # These sliced tensors both have this shape:
     # [batch_size, sequence_length - warmup_steps, num_y_signals]
