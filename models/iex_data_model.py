@@ -24,29 +24,24 @@ df["day"] = df["date"].dt.dayofyear
 df["hour"] = df["date"].dt.hour
 df = df.set_index("date")
 
-y_scaler = MinMaxScaler()
-y_train = y_scaler.fit_transform(df["target"])
-
 logging.info("Spliting List")
-
-y_data = df.target.shift(-5).values[:-5]
-x_data = df.drop(["target"], axis=1).values[0:-5]
 
 num_x_signals = x_data.shape[1]
 
 train_split = 0.8
 num_train = int(train_split * len(x_data))
 
-x_train = x_data[0:num_train]
-x_test = x_data[num_train:]
-y_train = y_data[0:num_train]
-y_test = y_data[num_train:]
+train = data[0:num_train]
+test = data[num_train:]
 
 logging.info("Scaling Data")
 
-x_scaler = MinMaxScaler()
-x_train = x_scaler.fit_transform(x_train)
-x_test = x_scaler.transform(x_test)
+scaler = MinMaxScaler()
+train = pd.DataFrame(scaler.fit_transform(train), columns = df.columns)
+test = pd.DataFrame(scaler.fit_transform(test), columns = df.columns)
+
+y_train = train.target.shift(-5).values[:-5]
+x_train = train.drop(["target"], axis=1).values[0:-5]
 
 logging.info(x_train.shape)
 logging.info(x_test.shape)
