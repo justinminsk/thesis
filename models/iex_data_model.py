@@ -78,7 +78,7 @@ def batch_generator(batch_size, sequence_length):
         
         yield (x_batch, y_batch)
 
-batch_size = 275
+batch_size = 150
 sequence_length = 3 * 1440
 
 generator = batch_generator(batch_size=batch_size,
@@ -97,7 +97,7 @@ logging.info("Start Training Model")
 model = Sequential()
 
 
-model.add(LSTM(units=256,
+model.add(LSTM(units=512,
               return_sequences=True,
               input_shape=(None, num_x_signals,)))
 model.add(Dense(1, activation='sigmoid'))
