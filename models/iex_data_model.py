@@ -101,49 +101,13 @@ logging.info("Start Training Model")
 model = Sequential()
 
 model.add(LSTM(units=512,
-              return_sequences=True,
               input_shape=(None, num_x_signals,)))
 
 model.add(Dense(1, activation='sigmoid'))
 
-warmup_steps = 50
-
-def loss_mse_warmup(y_true, y_pred):
-    """
-    Calculate the Mean Squared Error between y_true and y_pred,
-    but ignore the beginning "warmup" part of the sequences.
-    
-    y_true is the desired output.
-    y_pred is the model's output.
-    """
-
-    # The shape of both input tensors are:
-    # [batch_size, sequence_length, num_y_signals].
-
-    # Ignore the "warmup" parts of the sequences
-    # by taking slices of the tensors.
-    y_true_slice = y_true[warmup_steps:]
-    y_pred_slice = y_pred[warmup_steps:]
-
-    # These sliced tensors both have this shape:
-    # [batch_size, sequence_length - warmup_steps, num_y_signals]
-
-    # Calculate the MSE loss for each value in these tensors.
-    # This outputs a 3-rank tensor of the same shape.
-    loss = tf.losses.mean_squared_error(labels=y_true_slice,
-                                        predictions=y_pred_slice)
-
-    # Keras may reduce this across the first axis (the batch)
-    # but the semantics are unclear, so to be sure we use
-    # the loss across the entire tensor, we reduce it to a
-    # single scalar with the mean function.
-    loss_mean = tf.reduce_mean(loss)
-
-    return loss_mean
-
 optimizer = RMSprop(lr=1e-3)
 
-model.compile(loss=loss_mse_warmup, optimizer=optimizer)
+model.compile(loss='adam', optimizer=optimizer)
 
 logging.info(model.summary())
 
