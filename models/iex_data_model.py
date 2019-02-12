@@ -26,8 +26,6 @@ df = df.set_index("date")
 
 logging.info("Spliting List")
 
-num_x_signals = x_data.shape[1]
-
 train_split = 0.8
 num_train = int(train_split * len(x_data))
 
@@ -42,6 +40,10 @@ test = pd.DataFrame(scaler.fit_transform(test), columns = df.columns)
 
 y_train = train.target.shift(-5).values[:-5]
 x_train = train.drop(["target"], axis=1).values[0:-5]
+y_test = test.target.shift(-5).values[:-5]
+x_test = test.drop(["target"], axis=1).values[0:-5]
+
+num_x_signals = x_train.shape[1]
 
 logging.info(x_train.shape)
 logging.info(x_test.shape)
