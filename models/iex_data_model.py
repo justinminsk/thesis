@@ -32,6 +32,10 @@ num_train = int(train_split * len(df.target))
 train = df[0:num_train]
 test = df[num_train:]
 
+y_scaler = MinMaxScaler()
+train = y_scaler.fit_transform(train[['target']])
+test = y_scaler.transform(test[['target']])
+
 y_train = train.target.shift(-5).values[:-5]
 x_train = train.drop(["target"], axis=1).values[0:-5]
 y_test = test.target.shift(-5).values[:-5]
@@ -39,9 +43,9 @@ x_test = test.drop(["target"], axis=1).values[0:-5]
 
 logging.info("Scaling Data")
 
-scaler = MinMaxScaler()
-x_train = scaler.fit_transform(x_train)
-x_test = scaler.fit_transform(x_test)
+x_scaler = MinMaxScaler()
+x_train = x_scaler.fit_transform(x_train)
+x_test = x_scaler.transform(x_test)
 
 num_x_signals = x_train.shape[1]
 
@@ -96,10 +100,10 @@ logging.info("Start Training Model")
 
 model = Sequential()
 
-
 model.add(LSTM(units=512,
               return_sequences=True,
               input_shape=(None, num_x_signals,)))
+
 model.add(Dense(1, activation='sigmoid'))
 
 warmup_steps = 50
@@ -118,8 +122,8 @@ def loss_mse_warmup(y_true, y_pred):
 
     # Ignore the "warmup" parts of the sequences
     # by taking slices of the tensors.
-    y_true_slice = y_true[:, warmup_steps:, :]
-    y_pred_slice = y_pred[warmup_steps:]
+    y_true_slice = y_true[:, warmup_steps:]
+    y_pred_slice = y_pred[:, warmup_steps:]
 
     # These sliced tensors both have this shape:
     # [batch_size, sequence_length - warmup_steps, num_y_signals]
@@ -226,7 +230,7 @@ def plot_comparison(start_idx, length=100, train=True):
     # The output of the model is between 0 and 1.
     # Do an inverse map to get it back to the scale
     # of the original data-set.
-    y_pred_rescaled = y_pred[0]
+    y_pred_rescaled = y_scaler.inverse_transform(y_pred[0])
     
     # For each output-signal.
     # Get the output-signal predicted by the model.
@@ -251,3 +255,4 @@ def plot_comparison(start_idx, length=100, train=True):
     plt.savefig(path+".png")
 
 plot_comparison(start_idx=50, length=1000, train=True)
+plot_comparison(start_idx=50, length=1000, train=False)
