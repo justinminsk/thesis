@@ -27,7 +27,7 @@ df = df.set_index("date")
 logging.info("Spliting List")
 
 train_split = 0.8
-num_train = int(train_split * len(x_data))
+num_train = int(train_split * len(df.target))
 
 train = data[0:num_train]
 test = data[num_train:]
