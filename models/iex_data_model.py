@@ -97,7 +97,7 @@ logging.info("Start Training Model")
 model = Sequential()
 
 
-model.add(LSTM(units=512,
+model.add(LSTM(units=256,
               return_sequences=True,
               input_shape=(None, num_x_signals,)))
 model.add(Dense(1, activation='sigmoid'))
