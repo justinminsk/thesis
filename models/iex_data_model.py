@@ -93,8 +93,7 @@ x_batch, y_batch = next(generator)
 print(x_batch.shape)
 print(y_batch.shape)
 
-validation_data = (np.expand_dims(x_test, axis=0),
-                   np.expand_dims(y_test, axis=0))
+validation_data = (x_test, y_test)
 
 logging.info("Start Training Model")
 
@@ -137,6 +136,8 @@ callbacks = [callback_early_stopping,
              callback_checkpoint,
              callback_tensorboard,
              callback_reduce_lr]
+
+print(validation_data.shape)
 
 model.fit_generator(generator=generator,
                     epochs=20,
