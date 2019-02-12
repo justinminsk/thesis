@@ -137,7 +137,6 @@ callbacks = [callback_early_stopping,
              callback_tensorboard,
              callback_reduce_lr]
 
-print(validation_data.shape)
 
 model.fit_generator(generator=generator,
                     epochs=20,
