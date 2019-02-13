@@ -119,7 +119,7 @@ model.add(LSTM(units=200,
 model.add(GRU(100))
 
 init = RandomUniform(minval=-0.03, maxval=0.03)
-model.add(Dense(num_y_signals,
+model.add(Dense(1,
                     activation='linear',
                     kernel_initializer=init))
 
