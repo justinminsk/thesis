@@ -156,7 +156,7 @@ model.add(GRU(100))
 model.add(Dropout(0.2))
 
 init = RandomUniform(minval=-0.05, maxval=0.05)
-model.add(Dense(num_y_signals,
+model.add(Dense(output=num_y_signals,
                     activation='linear',
                     kernel_initializer=init))
 
