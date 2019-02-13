@@ -6,7 +6,4 @@ gsutil cp iex_clean.parquet gs://jminsk_thesis/iex_data/iex_clean.parquet
 gsutil cp date_iex_data.parquet gs://jminsk_thesis/iex_data/date_iex_data.parquet 
 
 python3 clean_twitter_data.py
-gsutil -m cp -r day_data/ gs://jminsk_thesis/
-
-# python3 clean_full_data.py
-# gsutil -m cp processed_twitter_data.parquet gs://jminsk_thesis/processed_twitter_data.parquet
+gsutil -m cp -r twitter_data.parquet gs://jminsk_thesis/twitter_data.parquet

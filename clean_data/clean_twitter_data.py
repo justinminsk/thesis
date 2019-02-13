@@ -55,7 +55,7 @@ print("Data Merged")
 
 del date_df
 
-filename = "day_data/full_data.parquet"
+filename = "twitter_data.parquet"
 fastparquet.write(filename, df)
 
 print("Full DataFrame Saved")
