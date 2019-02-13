@@ -43,6 +43,8 @@ df = df.set_index("created_at")
 
 df.loc[:,'date_col'] = df.index
 
+df = df.sort("date_col")
+
 print("Resampled To Get Tweet Text Per Minute")
 
 df = pd.merge_asof(date_df, df, on="date_col")
