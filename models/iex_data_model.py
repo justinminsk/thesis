@@ -79,7 +79,7 @@ def batch_generator(batch_size, sequence_length):
         x_batch = np.zeros(shape=x_shape, dtype=np.float16)
 
         # Allocate a new array for the batch of output-signals.
-        y_shape = (batch_size, sequence_length, num_y_signals)
+        y_shape = (batch_size, sequence_length)
         y_batch = np.zeros(shape=y_shape, dtype=np.float16)
 
         # Fill the batch with random sequences of data.
