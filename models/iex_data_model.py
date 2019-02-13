@@ -111,7 +111,7 @@ validation_data = (np.expand_dims(x_test_scaled, axis=0),
 
 print("Build Model")
 
-warmup_steps = 50
+warmup_steps = 20
 
 def loss_mse_warmup(y_true, y_pred):
     """
@@ -174,7 +174,7 @@ callback_checkpoint = ModelCheckpoint(filepath=path_checkpoint,
                                       save_best_only=True)
 
 callback_early_stopping = EarlyStopping(monitor='val_loss',
-                                        patience=5, verbose=1)
+                                        patience=3, verbose=1)
 
 callback_tensorboard = TensorBoard(log_dir='./iex_logs/',
                                    histogram_freq=0,
