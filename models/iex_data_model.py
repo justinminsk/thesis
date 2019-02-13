@@ -101,10 +101,10 @@ sequence_length = 7200
 generator = batch_generator(batch_size=batch_size,
                             sequence_length=sequence_length)
 
-x_batch, y_batch = next(generator)
+# x_batch, y_batch = next(generator)
 
-print(x_batch.shape)
-print(y_batch.shape)
+# print(x_batch.shape)
+# print(y_batch.shape)
 
 validation_data = (np.expand_dims(x_test_scaled, axis=0),
                    np.expand_dims(y_test_scaled, axis=0))
