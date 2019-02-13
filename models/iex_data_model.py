@@ -95,7 +95,7 @@ def batch_generator(batch_size, sequence_length):
         yield (x_batch, y_batch)
 
 
-batch_size = 256
+batch_size = 100
 sequence_length = 7200
 
 generator = batch_generator(batch_size=batch_size,
@@ -256,7 +256,7 @@ def plot_comparison(start_idx, length=100, train=True):
         p = plt.axvspan(0, warmup_steps, facecolor='black', alpha=0.15)
         
         # Plot labels etc.
-        plt.ylabel(target_names[signal])
+        plt.ylabel(signal)
         plt.legend()
         plt.savefig("iex_pred.png")
 
