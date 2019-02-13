@@ -56,13 +56,16 @@ print("Train Data Shape:", x_train.shape)
 print("Test Data Shape:", x_test.shape)
 
 print("Scaling Data")
-x_scaler = MinMaxScaler()
+x_scaler = MinMaxScaler(feature_range = (0, 1))
 x_train_scaled = x_scaler.fit_transform(x_train)
 x_test_scaled = x_scaler.transform(x_test)
 
-y_scaler = MinMaxScaler()
+y_scaler = MinMaxScaler(feature_range = (0, 1))
 y_train_scaled = y_scaler.fit_transform(y_train)
 y_test_scaled = y_scaler.transform(y_test)
+
+y_train_scaled = y_train_scaled.reshape(y_train_scaled.shape[0],)
+y_test_scaled = y_test_scaled.reshape(y_test_scaled.shape[0],)
 
 print("x Train:",x_train_scaled.shape)
 print("y Trian", y_train_scaled.shape)
@@ -79,7 +82,7 @@ def batch_generator(batch_size, sequence_length):
         x_batch = np.zeros(shape=x_shape, dtype=np.float16)
 
         # Allocate a new array for the batch of output-signals.
-        y_shape = (batch_size, sequence_length, num_y_signals)
+        y_shape = (batch_size, sequence_length,)
         y_batch = np.zeros(shape=y_shape, dtype=np.float16)
 
         # Fill the batch with random sequences of data.
@@ -96,7 +99,7 @@ def batch_generator(batch_size, sequence_length):
 
 
 batch_size = 100
-sequence_length = 7200
+sequence_length = 3200
 
 generator = batch_generator(batch_size=batch_size,
                             sequence_length=sequence_length)
@@ -127,8 +130,8 @@ def loss_mse_warmup(y_true, y_pred):
 
     # Ignore the "warmup" parts of the sequences
     # by taking slices of the tensors.
-    y_true_slice = y_true[:, warmup_steps:, :]
-    y_pred_slice = y_pred[:, warmup_steps:, :]
+    y_true_slice = y_true[:, warmup_steps:]
+    y_pred_slice = y_pred[:, warmup_steps:]
 
     # These sliced tensors both have this shape:
     # [batch_size, sequence_length - warmup_steps, num_y_signals]
@@ -148,7 +151,7 @@ def loss_mse_warmup(y_true, y_pred):
 
 # an lstm to a gru to a dense output
 model = Sequential()
-model.add(LSTM(units=200, return_sequences=True, input_shape=(None, num_x_signals,)))
+model.add(LSTM(units=200, return_sequences=True, input_shape=(None, num_x_signals)))
 model.add(Dropout(0.2))
 model.add(GRU(100, return_sequences=False))
 model.add(Dropout(0.2))
