@@ -5,17 +5,11 @@ import re
 from tqdm import tqdm
 import pandas as pd
 import numpy as np
-from dateutil.parser import *
+from dateutil.parser import parse
 
 
 print("--Start--")
 print("spilt_data_by_day")
-
-# get minute by minute list 
-start = parse("2018-12-11") # 2018-12-12  09:29:00 
-end = parse("2019-01-24") # 2019-01-23  16:00:00
-
-dates_list = pd.date_range(start=start, end=end, freq="D")
 
 # https://stackoverflow.com/questions/20906474/import-multiple-csv-files-into-pandas-and-concatenate-into-one-dataframe
 path = "./en_tweets"
@@ -51,7 +45,11 @@ df.loc[:,'date_col'] = df.index
 
 print("Resampled To Get Tweet Text Per Minute")
 
-df = df.merge(date_df, how="left", on="date_col")
+df = pd.merge_asof(date_df, df, on="date_col")
+
+df = df.resample("1Min").agg({"text" : " ".join, "tweet_count" : sum})
+
+print(df.head())
 
 print("Data Merged")
 
@@ -61,12 +59,5 @@ filename = "day_data/full_data.parquet"
 fastparquet.write(filename, df)
 
 print("Full DataFrame Saved")
-
-for i in tqdm(range(1, len(dates_list)-1)):
-    prev_date = dates_list[i - 1]
-    date = dates_list[i]
-    filename = "day_data/data"+str(date)+".parquet"
-    temp_df = df.loc[(df["date_col"] > prev_date) & (df["date_col"] < date)]
-    fastparquet.write(filename, temp_df)
 
 print("--End--")
