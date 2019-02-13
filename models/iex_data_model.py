@@ -6,7 +6,7 @@ import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 from tensorflow.python.keras.initializers import RandomUniform
 from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.layers import Input, Dense, Dropout, Embedding, LSTM, GRU
+from tensorflow.python.keras.layers import Input, Dense, Embedding, LSTM, GRU
 from tensorflow.python.keras.optimizers import RMSprop
 from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard, ReduceLROnPlateau
 
@@ -148,12 +148,10 @@ def loss_mse_warmup(y_true, y_pred):
 
 # an lstm to a gru to a dense output
 model = Sequential()
-model.add(GRU(units=200,
+model.add(LSTM(units=200,
               return_sequences=True,
               input_shape=(None, num_x_signals,)))
-model.add(Dropout(0.2))
 model.add(GRU(100))
-model.add(Dropout(0.2))
 
 init = RandomUniform(minval=-0.05, maxval=0.05)
 model.add(Dense(num_y_signals,
