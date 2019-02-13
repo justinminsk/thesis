@@ -41,7 +41,7 @@ y_data = y_data.reshape(y_data.shape[0], 1)
 print("Shape y_data:", y_data.shape)
 
 num_x_signals = x_data.shape[1]
-num_y_signals = 1
+num_y_signals = y_data.shape[1]
 
 print("Spliting List")
 
@@ -119,7 +119,7 @@ model.add(LSTM(units=200,
 model.add(GRU(100))
 
 init = RandomUniform(minval=-0.03, maxval=0.03)
-model.add(Dense(1,
+model.add(Dense(num_y_signals,
                     activation='linear',
                     kernel_initializer=init))
 
