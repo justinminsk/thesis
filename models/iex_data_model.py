@@ -116,7 +116,7 @@ model = Sequential()
 model.add(LSTM(units=200, return_sequences=True, input_shape=(None, num_x_signals,)))
 model.add(GRU(100, return_sequences=False))
 init = RandomUniform(minval=-0.05, maxval=0.05)
-model.add(Dense(num_y_signals, activation='linear', kernel_initializer=init))
+model.add(Dense(num_y_signals,  kernel_initializer='normal'))
 
 optimizer = RMSprop(lr=1e-3)
 model.compile(loss='mean_squared_error', optimizer=optimizer)
