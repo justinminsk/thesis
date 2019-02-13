@@ -11,6 +11,19 @@ from pyspark.ml import Pipeline
 from pyspark.ml import PipelineModel
 
 
+"""
+gcloud dataproc clusters create twitter-spark \
+    --image-version 1.3 \
+    --master-machine-type n1-standard-8 \
+    --worker-machine-type n1-standard-8 \
+    --metadata 'MINICONDA_VARIANT=3' \
+    --metadata 'MINICONDA_VERSION=latest' \
+    --metadata 'CONDA_PACKAGES=scipy=1.0.0 tensorflow=1.12.0' \
+    --metadata 'PIP_PACKAGES=pandas==0.23.0 scipy==1.1.0 fastparquet==0.2.1' \
+    --initialization-actions \
+    gs://dataproc-initialization-actions/conda/bootstrap-conda.sh,gs://dataproc-initialization-actions/conda/install-conda-env.sh
+"""
+
 inputdir = "gs://jminsk_thesis/day_data/"
 outputdir= "gs://jminsk_thesis/"
 
