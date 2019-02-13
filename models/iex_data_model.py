@@ -61,8 +61,8 @@ x_train_scaled = x_scaler.fit_transform(x_train)
 x_test_scaled = x_scaler.transform(x_test)
 
 y_scaler = MinMaxScaler()
-y_train_scaled = y_scaler.fit_transform(y_train)
-y_test_scaled = y_scaler.transform(y_test)
+y_train_scaled = y_scaler.fit_transform(y_train).reshape(y_train.shape[0],)
+y_test_scaled = y_scaler.transform(y_test).reshape(y_test.shape[0],)
 
 print("x Train:",x_train_scaled.shape)
 print("y Trian", y_train_scaled.shape)
@@ -79,7 +79,7 @@ def batch_generator(batch_size, sequence_length):
         x_batch = np.zeros(shape=x_shape, dtype=np.float16)
 
         # Allocate a new array for the batch of output-signals.
-        y_shape = (batch_size, sequence_length, 1)
+        y_shape = (batch_size, sequence_length)
         y_batch = np.zeros(shape=y_shape, dtype=np.float16)
 
         # Fill the batch with random sequences of data.
