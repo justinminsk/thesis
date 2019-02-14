@@ -2,6 +2,7 @@ import fastparquet
 import os
 import glob
 import re
+import scipy
 from tqdm import tqdm
 import pandas as pd
 import numpy as np
@@ -27,6 +28,7 @@ df.columns = ["created_at", "id_str", "text", "truncated", "verified", "follower
 
 df.drop(columns=["id_str", "truncated", "verified", "followers_count", "favourites_count"])
 
+# For agg tweets 
 df["tweet_count"] = 1
 
 date_df = pd.read_parquet("date_iex_data.parquet", engine="fastparquet")
@@ -39,7 +41,7 @@ print("Changed DateTime to Minute By Minute")
 
 df = df.set_index("created_at")
 
-df = df.resample("1Min").agg({"text" : " ".join, "tweet_count" : sum})
+df = df.resample("1Min").agg({"text" : " ".join, "tweet_count" : sum, "stock_price_col" : lambda x: scipy.stats.mode(x)[0][0])
 
 df.loc[:,'date_col'] = df.index
 
@@ -49,9 +51,11 @@ print("Resampled To Get Tweet Text Per Minute")
 
 df = pd.merge_asof(date_df, df, on="date_col")
 
-df.reset_index(drop=True).set_index("date_col", drop=False)
+df.reset_index(drop=True).set_index("date_col")
 
 df = df.resample("1Min").agg({"text" : " ".join, "tweet_count" : sum})
+
+df[:, "date_col"] = df.index
 
 print(df.head())
 
