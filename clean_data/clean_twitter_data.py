@@ -9,7 +9,7 @@ from dateutil.parser import parse
 
 
 print("--Start--")
-print("spilt_data_by_day")
+print("clean_twitter_data")
 
 # https://stackoverflow.com/questions/20906474/import-multiple-csv-files-into-pandas-and-concatenate-into-one-dataframe
 path = "./en_tweets"
@@ -48,6 +48,8 @@ df = df.sort_values("date_col")
 print("Resampled To Get Tweet Text Per Minute")
 
 df = pd.merge_asof(date_df, df, on="date_col")
+
+df.reset_index(drop=True).set_index("date_col", drop=False)
 
 df = df.resample("1Min").agg({"text" : " ".join, "tweet_count" : sum})
 
