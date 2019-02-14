@@ -51,7 +51,7 @@ df = df.sort_values("date_col")
 
 print("Resampled To Get Tweet Text Per Minute")
 
-df = pd.merge_asof(date_df, df, on="date_col", direction="forward")
+df = pd.merge_asof(df, date_df, on="date_col")
 
 print(df.head())
 
