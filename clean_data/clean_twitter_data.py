@@ -51,9 +51,7 @@ print("Resampled To Get Tweet Text Per Minute")
 
 df = pd.merge_asof(date_df, df, on="date_col")
 
-df.date_col = df.date_col.apply(parse)
-
-df.reset_index(drop=True).set_index("date_col")
+df = df.reset_index(drop=True).set_index("date_col")
 
 df = df.resample("1Min").agg({"text" : " ".join, "tweet_count" : sum, "stock_price_col" : lambda x: stats.mode(x)[0][0]})
 

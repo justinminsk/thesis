@@ -31,9 +31,9 @@ num_train = int(train_split * len(df.target))
 
 # get targets
 shift_steps = 1
-df_targets = df.target.shift(-shift_steps)
+df_targets = df.target
 
-x_data = df.values[0:-shift_steps]
+x_data = df.values
 print("Shape x_data:", x_data.shape)
 
 y_data = df_targets.values[:-shift_steps]
