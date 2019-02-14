@@ -18,7 +18,7 @@ allFiles = glob.glob(os.path.join(path,"*.csv"))
 np_array_list = []
 for file_ in allFiles:
     df = pd.read_csv(file_,index_col=None, header=0)
-    np_array_list.append(df.as_matrix())
+    np_array_list.append(df.values)
 
 comb_np_array = np.vstack(np_array_list)
 df = pd.DataFrame(comb_np_array)
@@ -39,7 +39,7 @@ print("Changed DateTime to Minute By Minute")
 
 df = df.set_index("created_at")
 
-# df = df.resample("1Min").agg({"text" : " ".join, "tweet_count" : sum})
+df = df.resample("1Min").agg({"text" : " ".join, "tweet_count" : sum})
 
 df.loc[:,'date_col'] = df.index
 
