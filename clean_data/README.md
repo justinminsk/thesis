@@ -14,7 +14,6 @@ OR
 
 1. `python3 clean_iex_data.py`
 1. `python3 clean_twitter_data.py`
-1. `python3 clean_full_data.py`
 
 
 #### Notes for Possible Dockerfile
