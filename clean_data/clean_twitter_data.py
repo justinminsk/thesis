@@ -42,6 +42,9 @@ df.created_at = df.created_at.apply(parse).map(lambda x: x.replace(second=0, mic
 
 print("Changed DateTime to Minute By Minute")
 
+def nearest(date):
+    return min(date_df.date_col, key=lambda x: x - date)
+
 df = df.set_index("created_at")
 
 df = df.resample("1Min").agg({"text" : " ".join, "tweet_count" : sum})
@@ -52,15 +55,23 @@ df.loc[:,'date_col'] = df.index
 
 df = df.reset_index(drop=True)
 
+df.date_col = df.date_col.apply(nearest)
+
+print(df.head())
+
+df = df.groupby("date_col").agg({"text" : " ".join, "tweet_count" : sum, "stock_price_col" : 'mean'})
+
+print(df.head())
+
 df = df.sort_values("date_col")
+
+print("df:", df.shape)
 
 print("Resampled To Get Tweet Text Per Minute")
 
 df = pd.merge_asof(df, date_df, on="date_col")
 
 print("df:", df.shape)
-
-df = df.groupby("date_col").agg({"text" : " ".join, "tweet_count" : sum, "stock_price_col" : 'mean'})
 
 print("Get Tweets Tied to Trading Times")
 
