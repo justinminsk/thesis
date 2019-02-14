@@ -33,6 +33,9 @@ df["tweet_count"] = 1
 
 date_df = pd.read_parquet("date_iex_data.parquet", engine="fastparquet")
 
+print("df:", df.shape)
+print("Date_df:", date_df.shape)
+
 print("Data Imported")
 
 df.created_at = df.created_at.apply(parse).map(lambda x: x.replace(second=0, microsecond=0, tzinfo=None))
@@ -42,6 +45,8 @@ print("Changed DateTime to Minute By Minute")
 df = df.set_index("created_at")
 
 df = df.resample("1Min").agg({"text" : " ".join, "tweet_count" : sum})
+
+print("df:", df.shape)
 
 df.loc[:,'date_col'] = df.index
 
@@ -53,13 +58,11 @@ print("Resampled To Get Tweet Text Per Minute")
 
 df = pd.merge_asof(df, date_df, on="date_col")
 
-print(df.head())
+print("df:", df.shape)
 
 df = df.groupby("date_col").agg({"text" : " ".join, "tweet_count" : sum, "stock_price_col" : 'mean'})
 
 print("Get Tweets Tied to Trading Times")
-
-print(df.head())
 
 print("Data Merged")
 
