@@ -41,7 +41,7 @@ print("Changed DateTime to Minute By Minute")
 
 df = df.set_index("created_at")
 
-df = df.resample("1Min").agg({"text" : " ".join, "tweet_count" : sum, "stock_price_col" : lambda x: scipy.stats.mode(x)[0][0])
+df = df.resample("1Min").agg({"text" : " ".join, "tweet_count" : sum, "stock_price_col" : lambda x: scipy.stats.mode(x)[0][0]})
 
 df.loc[:,'date_col'] = df.index
 
