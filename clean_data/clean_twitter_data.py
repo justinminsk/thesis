@@ -55,8 +55,6 @@ df = df.reset_index(drop=True)
 
 df = df.sort_values("date_col")
 
-print("df:", df.shape)
-
 print("Resampled To Get Tweet Text Per Minute")
 
 df = pd.merge_asof(df.set_index('date_col').sort_index(),
@@ -64,6 +62,9 @@ df = pd.merge_asof(df.set_index('date_col').sort_index(),
                    left_index=True, right_index=True, direction="forward")
 
 df = df.reset_index(drop=True)
+
+print("df:", df.shape)
+print(df.head())
 
 df = df.groupby("date_col").agg({"text" : " ".join, "tweet_count" : sum, "stock_price_col" : 'mean'})
 
