@@ -59,7 +59,7 @@ print("Resampled To Get Tweet Text Per Minute")
 
 # https://stackoverflow.com/questions/46656718/merge-2-dataframes-on-closest-past-date
 df = pd.merge_asof(df.set_index('date_col').sort_index(),
-                   date_df.set_index('date_col', inplace=False).sort_index(),
+                   date_df.set_index('date_col', drop=False).sort_index(),
                    left_index=True, right_index=True, direction="forward")
 
 df = df.reset_index(drop=True)
