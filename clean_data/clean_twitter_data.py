@@ -53,31 +53,19 @@ df.loc[:,'date_col'] = df.index
 
 df = df.reset_index(drop=True)
 
-def find_nearest(group, match):
-    nbrs = NearestNeighbors(1).fit(match['date_col'].values[:, None])
-    dist, ind = nbrs.kneighbors(group['date_col'].values[:, None])
-
-    group[:,'date1'] = group['date_col']
-    group['date_col'] = match['date_col'].values[ind.ravel()]
-    return group
-
-df = df.apply(find_nearest, date_df)
-
-print(df.head())
-
-df = df.drop(["date1"])
-
-df = df.groupby("date_col").agg({"text" : " ".join, "tweet_count" : sum, "stock_price_col" : 'mean'})
-
-print(df.head())
-
 df = df.sort_values("date_col")
 
 print("df:", df.shape)
 
 print("Resampled To Get Tweet Text Per Minute")
 
-df = pd.merge_asof(df, date_df, on="date_col")
+df = pd.merge_asof(df.set_index('date_col').sort_index(),
+                   date_df.set_index('date_col', inplace=False).sort_index(),
+                   left_index=True, right_index=True, direction="forward")
+
+df = df.reset_index(drop=True)
+
+df = df.groupby("date_col").agg({"text" : " ".join, "tweet_count" : sum, "stock_price_col" : 'mean'})
 
 print("df:", df.shape)
 
