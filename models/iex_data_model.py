@@ -82,7 +82,7 @@ def batch_generator(batch_size, sequence_length):
         x_batch = np.zeros(shape=x_shape, dtype=np.float16)
 
         # Allocate a new array for the batch of output-signals.
-        y_shape = (batch_size, sequence_length,)
+        y_shape = (batch_size, sequence_length, num_y_signals)
         y_batch = np.zeros(shape=y_shape, dtype=np.float16)
 
         # Fill the batch with random sequences of data.
@@ -92,8 +92,8 @@ def batch_generator(batch_size, sequence_length):
             idx = np.random.randint(num_train - sequence_length)
             
             # Copy the sequences of data starting at this index.
-            x_batch[i] = x_train_scaled[idx:idx+sequence_length]
-            y_batch[i] = y_train_scaled[idx:idx+sequence_length]
+            x_batch[i] = x_train_scaled[idx:idx+sequence_length,:]
+            y_batch[i] = y_train_scaled[idx:idx+sequence_length,:]
         
         yield (x_batch, y_batch)
 
