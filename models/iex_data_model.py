@@ -64,8 +64,8 @@ y_scaler = MinMaxScaler(feature_range = (0, 1))
 y_train_scaled = y_scaler.fit_transform(y_train)
 y_test_scaled = y_scaler.transform(y_test)
 
-y_train_scaled = y_train_scaled.reshape(y_train_scaled.shape[0],)
-y_test_scaled = y_test_scaled.reshape(y_test_scaled.shape[0],)
+# y_train_scaled = y_train_scaled.reshape(y_train_scaled.shape[0],)
+# y_test_scaled = y_test_scaled.reshape(y_test_scaled.shape[0],)
 
 print("x Train:",x_train_scaled.shape)
 print("y Trian", y_train_scaled.shape)
@@ -151,10 +151,10 @@ def loss_mse_warmup(y_true, y_pred):
 
 # an lstm to a gru to a dense output
 model = Sequential()
-model.add(GRU(units=200, return_sequences=True, input_shape=(None, num_x_signals, )))
-# model.add(Dropout(0.2))
-# model.add(GRU(100, return_sequences=True))
-# model.add(Dropout(0.2))
+model.add(LSTM(units=200, return_sequences=True, input_shape=(None, num_x_signals, )))
+model.add(Dropout(0.2))
+model.add(GRU(100, return_sequences=True))
+model.add(Dropout(0.2))
 
 init = RandomUniform(minval=-0.05, maxval=0.05)
 model.add(Dense(num_y_signals, activation='sigmoid')) # activation='linear', kernel_initializer=init
