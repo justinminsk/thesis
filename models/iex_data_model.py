@@ -157,7 +157,7 @@ model.add(GRU(100, return_sequences=True))
 model.add(Dropout(0.2))
 
 init = RandomUniform(minval=-0.05, maxval=0.05)
-model.add(Dense(num_y_signals, activation='sigmoid')) # activation='linear', kernel_initializer=init))
+model.add(Dense(num_y_signals, activation='linear', kernel_initializer=init)) #  activation='sigmoid'
 
 optimizer = RMSprop(lr=1e-3)
 model.compile(loss=loss_mse_warmup, optimizer=optimizer)
