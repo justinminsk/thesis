@@ -7,6 +7,7 @@ from tqdm import tqdm
 import pandas as pd
 import numpy as np
 from dateutil.parser import parse
+from sklearn.neighbors import NearestNeighbors
 
 
 print("--Start--")
@@ -42,9 +43,6 @@ df.created_at = df.created_at.apply(parse).map(lambda x: x.replace(second=0, mic
 
 print("Changed DateTime to Minute By Minute")
 
-def nearest(date):
-    return min(date_df.date_col, key=lambda x: x - date)
-
 df = df.set_index("created_at")
 
 df = df.resample("1Min").agg({"text" : " ".join, "tweet_count" : sum})
@@ -55,9 +53,19 @@ df.loc[:,'date_col'] = df.index
 
 df = df.reset_index(drop=True)
 
-df.date_col = df.date_col.apply(nearest)
+def find_nearest(group, match):
+    nbrs = NearestNeighbors(1).fit(match['date_col'].values[:, None])
+    dist, ind = nbrs.kneighbors(group['date_col'].values[:, None])
+
+    group[:,'date1'] = group['date_col']
+    group['date_col'] = match['date_col'].values[ind.ravel()]
+    return group
+
+df = df.apply(find_nearest, date_df)
 
 print(df.head())
+
+df = df.drop(["date1"])
 
 df = df.groupby("date_col").agg({"text" : " ".join, "tweet_count" : sum, "stock_price_col" : 'mean'})
 
