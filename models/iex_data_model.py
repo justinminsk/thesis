@@ -92,8 +92,8 @@ def batch_generator(batch_size, sequence_length):
             idx = np.random.randint(num_train - sequence_length)
             
             # Copy the sequences of data starting at this index.
-            x_batch[i] = x_train_scaled[idx:idx+sequence_length,:]
-            y_batch[i] = y_train_scaled[idx:idx+sequence_length,:]
+            x_batch[i] = x_train_scaled[idx:idx+sequence_length]
+            y_batch[i] = y_train_scaled[idx:idx+sequence_length]
         
         yield (x_batch, y_batch)
 
@@ -130,8 +130,8 @@ def loss_mse_warmup(y_true, y_pred):
 
     # Ignore the "warmup" parts of the sequences
     # by taking slices of the tensors.
-    y_true_slice = y_true[:, warmup_steps:]
-    y_pred_slice = y_pred[:, warmup_steps:]
+    y_true_slice = y_true[:, warmup_steps:, :]
+    y_pred_slice = y_pred[:, warmup_steps:, :]
 
     # These sliced tensors both have this shape:
     # [batch_size, sequence_length - warmup_steps, num_y_signals]
@@ -151,13 +151,13 @@ def loss_mse_warmup(y_true, y_pred):
 
 # an lstm to a gru to a dense output
 model = Sequential()
-model.add(LSTM(units=200, return_sequences=True, input_shape=(None, num_x_signals, )))
-# model.add(Dropout(0.2))
+model.add(LSTM(units=200, return_sequences=True, input_shape=(None, num_x_signals,)))
+model.add(Dropout(0.2))
 model.add(GRU(100, return_sequences=True))
-# model.add(Dropout(0.2))
+model.add(Dropout(0.2))
 
 init = RandomUniform(minval=-0.05, maxval=0.05)
-model.add(Dense(num_y_signals, activation='sigmoid')) # activation='linear', kernel_initializer=init
+model.add(Dense(num_y_signals, activation='linear', kernel_initializer=init)) #  activation='sigmoid'
 
 optimizer = RMSprop(lr=1e-3)
 model.compile(loss=loss_mse_warmup, optimizer=optimizer)
