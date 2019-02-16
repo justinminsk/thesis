@@ -26,7 +26,7 @@ df["hour"] = df["date"].dt.hour
 df = df.set_index("date")
 
 # Used to split later
-train_split = 0.8
+train_split = 0.6
 num_train = int(train_split * len(df.target))
 
 # get targets
