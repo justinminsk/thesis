@@ -36,7 +36,7 @@ df_targets = df.target
 x_data = df.values
 print("Shape x_data:", x_data.shape)
 
-y_data = df_targets.values[:-shift_steps]
+y_data = df_targets.values
 y_data = y_data.reshape(y_data.shape[0], 1)
 print("Shape y_data:", y_data.shape)
 
