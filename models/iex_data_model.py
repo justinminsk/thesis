@@ -26,7 +26,7 @@ df["hour"] = df["date"].dt.hour
 df = df.set_index("date")
 
 # Used to split later
-train_split = 0.6
+train_split = 0.8
 num_train = int(train_split * len(df.target))
 
 # get targets
@@ -152,9 +152,9 @@ def loss_mse_warmup(y_true, y_pred):
 # an lstm to a gru to a dense output
 model = Sequential()
 model.add(LSTM(units=200, return_sequences=True, input_shape=(None, num_x_signals,)))
-model.add(Dropout(0.2))
-model.add(GRU(100, return_sequences=True))
-model.add(Dropout(0.2))
+# model.add(Dropout(0.2))
+# model.add(GRU(100, return_sequences=True))
+# model.add(Dropout(0.2))
 
 init = RandomUniform(minval=-0.05, maxval=0.05)
 model.add(Dense(num_y_signals, activation='linear', kernel_initializer=init)) #  activation='sigmoid'
