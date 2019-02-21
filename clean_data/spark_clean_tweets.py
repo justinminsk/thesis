@@ -69,7 +69,7 @@ if __name__=="__main__":
 	except ValueError:
 	    warnings.warn('SparkContext already exists in this scope')
 	print('Retrieving Data from {}'.format(inputdir))
-	df = sqlContext.read.parquet(inputdir+"full_data.parquet")
+	df = sqlContext.read.parquet("twitter_data.parquet")
 	reg_replaceUdf = f.udf(pre_processing, t.StringType())
 	df = df.withColumn('tweet', reg_replaceUdf(df.text))
 	print('Get Feature Vectors')
