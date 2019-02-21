@@ -6,7 +6,7 @@ import time
 from pyspark.sql import functions as f
 from pyspark.sql import types as t
 from pyspark.sql.types import StringType, TimestampType
-from pyspark.ml.feature import Tokenizer, NGram, CountVectorizer, IDF, VectorAssembler, StandardScaler
+from pyspark.ml.feature import Tokenizer, NGram, CountVectorizer, IDF, VectorAssembler, StandardScaler, StopWordsRemover
 from pyspark.ml import Pipeline
 from pyspark.ml import PipelineModel
 
@@ -50,13 +50,14 @@ def pre_processing(column):
 
 def build_pipeline():
     tokenizer = [Tokenizer(inputCol='text',outputCol='words')]
-    ngrams = [NGram(n=i, inputCol='words', outputCol='{0}_grams'.format(i)) for i in range(1,6)]
-    cv = [CountVectorizer(vocabSize=100000, inputCol='{0}_grams'.format(i), outputCol='{0}_tf'.format(i)) for i in range(1,6)]
+    remover = StopWordsRemover(inputCol="words", outputCol="stopped_words")
+    ngrams = [NGram(n=i, inputCol='stopped_words', outputCol='{0}_grams'.format(i)) for i in range(1,6)]
+    cv = [CountVectorizer(vocabSize=120000, inputCol='{0}_grams'.format(i), outputCol='{0}_tf'.format(i)) for i in range(1,6)]
     idf = [IDF(inputCol='{0}_tf'.format(i), outputCol='{0}_tfidf'.format(i), minDocFreq=5) for i in range(1,6)]
     tweetvect = [VectorAssembler(inputCols=["tweet_count"], outputCol="vec_tweet_count")]
     ss = [StandardScaler(inputCol="vec_tweet_count", outputCol="ss_tweet_count")]
     assembler = [VectorAssembler(inputCols=input_cols, outputCol='features')]
-    pipeline = Pipeline(stages=tokenizer+ngrams+cv+idf+tweetvect+ss+assembler)
+    pipeline = Pipeline(stages=tokenizer+remover+ngrams+cv+idf+tweetvect+ss+assembler)
     return pipeline
 
 if __name__=="__main__":
