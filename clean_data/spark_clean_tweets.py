@@ -24,7 +24,7 @@ gcloud dataproc clusters create twitter-spark \
     gs://dataproc-initialization-actions/conda/bootstrap-conda.sh,gs://dataproc-initialization-actions/conda/install-conda-env.sh
 """
 
-inputdir = "gs://jminsk_thesis/day_data/"
+inputdir = "gs://jminsk_thesis/"
 outputdir= "gs://jminsk_thesis/"
 
 pat1 = r'@[A-Za-z0-9_]+'
@@ -68,8 +68,8 @@ if __name__=="__main__":
 	    print('Created a SparkContext')
 	except ValueError:
 	    warnings.warn('SparkContext already exists in this scope')
-	print('Retrieving Data from {}'.format(inputdir))
-	df = sqlContext.read.parquet("twitter_data.parquet")
+	print('Retrieving Data from {}'.format(inputdir+"twitter_data.parquet"))
+	df = sqlContext.read.parquet(inputdir+"twitter_data.parquet")
 	reg_replaceUdf = f.udf(pre_processing, t.StringType())
 	df = df.withColumn('tweet', reg_replaceUdf(df.text))
 	print('Get Feature Vectors')
