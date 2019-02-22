@@ -1,4 +1,7 @@
 #!/bin/bash
-gsutil cp gs://jminsk_thesis/iex_data/iex_clean.parquet iex_clean.parquet
+mkdir iex_data
+mkdir twitter_data
 
-gsutil -m cp -r gs://jminsk_thesis/twitter_data.parquet twitter_data.parquet
+gsutil cp gs://jminsk_thesis/iex_data .
+
+gsutil -m cp -r gs://jminsk_thesis/twitter_data .

@@ -14,7 +14,7 @@ print("New Model")
 
 print("Getting Data")
 
-df = pd.read_parquet("iex_clean.parquet")
+df = pd.read_parquet("iex_data/iex_clean.parquet")
 
 print('Cleaning Data')
 
