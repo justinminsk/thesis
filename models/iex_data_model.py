@@ -202,15 +202,15 @@ result = model.evaluate(x=np.expand_dims(x_test_scaled, axis=0),
 
 print("loss (test-set):", result)                       
 
-
+"""
 def plot_comparison(start_idx, length=100, train=True):
-    """
+    """"""
     Plot the predicted and true output-signals.
     
     :param start_idx: Start-index for the time-series.
     :param length: Sequence-length to process and plot.
     :param train: Boolean whether to use training- or test-set.
-    """
+    """"""
     
     if train:
         # Use training-data.
@@ -264,3 +264,4 @@ def plot_comparison(start_idx, length=100, train=True):
         plt.savefig("iex_pred.png")
 
 plot_comparison(start_idx=200, length=1000, train=False)
+"""
