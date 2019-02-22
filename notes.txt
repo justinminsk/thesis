@@ -1,0 +1,5 @@
+iex models
+GRU: loss (test-set): 3.3585554774617776e-05
+
+
+twitter models

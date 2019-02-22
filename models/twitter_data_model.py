@@ -14,30 +14,18 @@ print("New Model")
 
 print("Getting Data")
 
-df = pd.read_parquet("iex_data/iex_clean.parquet")
-
-print('Cleaning Data')
-
-# Add some data and clean 
-df = df.drop(["label"], axis=1)
-df = df.rename(index=str, columns={"average" : "target"})
-df["day"] = df["date"].dt.dayofyear
-df["hour"] = df["date"].dt.hour
-df = df.set_index("date")
+x_data = np.load("twitter_data/x_twitter_data.npy")
 
 # Used to split later
 train_split = 0.8
-num_train = int(train_split * len(df.target))
+num_train = int(train_split * len(x_data.shape[0]))
 
 # get targets
 shift_steps = 1
-df_targets = df.target
 
-x_data = df.values
 print("Shape x_data:", x_data.shape)
 
-y_data = df_targets.values
-y_data = y_data.reshape(y_data.shape[0], 1)
+y_data = np.load("twitter_data/y_twitter_data.npy")
 print("Shape y_data:", y_data.shape)
 
 num_x_signals = x_data.shape[1]
@@ -54,21 +42,6 @@ y_test = y_data[num_train:]
 
 print("Train Data Shape:", x_train.shape)
 print("Test Data Shape:", x_test.shape)
-
-print("Scaling Data")
-x_scaler = MinMaxScaler(feature_range = (0, 1))
-x_train_scaled = x_scaler.fit_transform(x_train)
-x_test_scaled = x_scaler.transform(x_test)
-
-y_scaler = MinMaxScaler(feature_range = (0, 1))
-y_train_scaled = y_scaler.fit_transform(y_train)
-y_test_scaled = y_scaler.transform(y_test)
-
-# y_train_scaled = y_train_scaled.reshape(y_train_scaled.shape[0],)
-# y_test_scaled = y_test_scaled.reshape(y_test_scaled.shape[0],)
-
-print("x Train:",x_train_scaled.shape)
-print("y Trian", y_train_scaled.shape)
 
 def batch_generator(batch_size, sequence_length):
     """
@@ -92,13 +65,13 @@ def batch_generator(batch_size, sequence_length):
             idx = np.random.randint(num_train - sequence_length)
             
             # Copy the sequences of data starting at this index.
-            x_batch[i] = x_train_scaled[idx:idx+sequence_length]
-            y_batch[i] = y_train_scaled[idx:idx+sequence_length]
+            x_batch[i] = x_train[idx:idx+sequence_length]
+            y_batch[i] = y_train[idx:idx+sequence_length]
         
         yield (x_batch, y_batch)
 
 
-batch_size = 100
+batch_size = 50
 sequence_length = 3200
 
 generator = batch_generator(batch_size=batch_size,
@@ -109,8 +82,8 @@ x_batch, y_batch = next(generator)
 print(x_batch.shape)
 print(y_batch.shape)
 
-validation_data = (np.expand_dims(x_test_scaled, axis=0),
-                   np.expand_dims(y_test_scaled, axis=0))
+validation_data = (np.expand_dims(x_test, axis=0),
+                   np.expand_dims(y_test, axis=0))
 
 print("Build Model")
 
@@ -197,7 +170,7 @@ model.fit_generator(generator=generator,
                     validation_data=validation_data,
                     callbacks=callbacks)
 
-result = model.evaluate(x=np.expand_dims(x_test_scaled, axis=0),
-                        y=np.expand_dims(y_test_scaled, axis=0))
+result = model.evaluate(x=np.expand_dims(x_test, axis=0),
+                        y=np.expand_dims(y_test, axis=0))
 
 print("loss (test-set):", result)                       
