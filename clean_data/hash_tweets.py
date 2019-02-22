@@ -32,7 +32,11 @@ print("df:", df.shape)
 
 df.text = df.text.apply(pre_processing)
 
+print("preprocessed")
+
 vectorizer = HashingVectorizer(stop_words="english", ngram_range=(1,5))
+
+print("text hashed")
 
 text_vector = vectorizer.fit_transform(df.text)
 
