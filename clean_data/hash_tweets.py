@@ -35,6 +35,8 @@ int_values = df[["tweet_count", "stock_price_col"]]
 
 scaled_values = scaler.fit_transform(int_values)
 
+print("scaled values:", scaled_values.shape)
+
 joblib.dump(scaler, 'twitter_scaler.pkl') 
 
 y_data = scaled_values[:,1]
