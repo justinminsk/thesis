@@ -21,12 +21,12 @@ df.average = df.average.shift(-1)
 df = df[:-1]
 
 # Save all data to a pickle
-fastparquet.write("iex_clean.parquet", df)
+fastparquet.write("iex_data/iex_clean.parquet", df)
 
 # create a smaller dataframe to add to twitter and wallstreet journal
 date_df = pd.DataFrame({"date_col": df.date, "stock_price_col" : df.average})
 
 # save smaller df to a pickle
-fastparquet.write("date_iex_data.parquet", date_df)
+fastparquet.write("iex_data/date_iex_data.parquet", date_df)
 
 print("--End--")

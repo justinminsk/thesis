@@ -26,7 +26,7 @@ def pre_processing(column):
     result = re.sub(r'[^A-Za-z ]','',fourth_process)
     return result.strip()
 
-df = pd.read_parquet("twitter_data.parquet", engine="fastparquet")
+df = pd.read_parquet("twitter_data/twitter_data.parquet", engine="fastparquet")
 
 print("df:", df.shape)
 
@@ -54,14 +54,14 @@ scaled_values = scaler.fit_transform(int_values)
 
 print("scaled values:", scaled_values.shape)
 
-joblib.dump(scaler, 'twitter_scaler.pkl') 
+joblib.dump(scaler, 'twitter_data/twitter_scaler.pkl') 
 
 y_data = scaled_values[:,1]
 
-np.save("y_twitter_data", y_data)
+np.save("twitter_data/y_twitter_data", y_data)
 
 scaled_count = scaled_values[:,0].reshape(scaled_values.shape[0], 1)
 
 x_data = np.concatenate((tfifd_vector, scaled_count), axis=1)
 
-np.save("x_twitter_data", x_data)
+np.save("twitter_data/x_twitter_data", x_data)
