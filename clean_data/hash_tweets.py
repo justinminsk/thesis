@@ -1,6 +1,7 @@
 import re
 import pandas as pd 
 import numpy as np 
+from scipy.sparse import coo_matrix, hstack
 from sklearn.externals import joblib
 from sklearn.feature_extraction.text import HashingVectorizer, TfidfTransformer
 from sklearn.preprocessing import MinMaxScaler
@@ -60,12 +61,12 @@ y_data = scaled_values[:,1]
 
 np.save("twitter_data/y_twitter_data", y_data)
 
-scaled_count = np.array(scaled_values[:,0]).reshape(scaled_values.shape[0], 1)
+scaled_count = coo_matrix(np.array(scaled_values[:,0]).reshape(scaled_values.shape[0], 1))
 
 print(scaled_count.shape)
 print(scaled_count.dtype)
 print(tfifd_vector.dtype)
 
-x_data = np.concatenate((np.array(tfifd_vector), scaled_count), axis=1)
+x_data = hstack([tfifd_vector, scaled_count])
 
 np.save("twitter_data/x_twitter_data", x_data)
