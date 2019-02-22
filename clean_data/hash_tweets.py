@@ -60,8 +60,8 @@ y_data = scaled_values[:,1]
 
 np.save("twitter_data/y_twitter_data", y_data)
 
-scaled_count = scaled_values[:,0].reshape(scaled_values.shape[0], 1)
+scaled_count = np.array(scaled_values[:,0]).reshape(scaled_values.shape[0], 1)
 
-x_data = np.concatenate((tfifd_vector, np.array(scaled_count)), axis=1)
+x_data = np.concatenate((tfifd_vector, scaled_count), axis=1)
 
 np.save("twitter_data/x_twitter_data", x_data)
