@@ -7,7 +7,6 @@ from tqdm import tqdm
 import pandas as pd
 import numpy as np
 from dateutil.parser import parse
-from sklearn.neighbors import NearestNeighbors
 
 
 print("--Start--")
