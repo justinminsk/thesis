@@ -1,8 +1,21 @@
+import re
 import pandas as pd 
 import numpy as np 
 from sklearn.externals import joblib
 from sklearn.feature_extraction.text import HashingVectorizer, TfidfTransformer
 from sklearn.preprocessing import MinMaxScaler
+
+
+pat1 = r'@[A-Za-z0-9_]+'
+pat2 = r'https?://[^ ]+'
+combined_pat = r'|'.join((pat1,pat2))
+www_pat = r'www.[^ ]+'
+negations_dic = {"isn't":"is not", "aren't":"are not", "wasn't":"was not", "weren't":"were not",
+                "haven't":"have not","hasn't":"has not","hadn't":"had not","won't":"will not",
+                "wouldn't":"would not", "don't":"do not", "doesn't":"does not","didn't":"did not",
+                "can't":"can not","couldn't":"could not","shouldn't":"should not","mightn't":"might not",
+                "mustn't":"must not"}
+neg_pattern = re.compile(r'\b(' + '|'.join(negations_dic.keys()) + r')\b')
 
 
 def pre_processing(column):
