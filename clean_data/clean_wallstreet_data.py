@@ -13,7 +13,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 print("--Start--")
 print("clean_wallstreet_data")
 
-df = pd.read_csv("wallstreet/WSJ.csv", encoding = "ISO-8859-1")
+df = pd.read_csv("wallstreet_data/WSJ.csv", encoding = "ISO-8859-1")
 
 date_df = pd.read_parquet("iex_data/date_iex_data.parquet")
 
