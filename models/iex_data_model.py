@@ -149,11 +149,11 @@ def loss_mse_warmup(y_true, y_pred):
 
     return loss_mean
 
-# an lstm to a gru to a dense output
+# an LSTM to a GRU to a dense output
 model = Sequential()
-model.add(LSTM(units=200, return_sequences=True, input_shape=(None, num_x_signals,)))
+model.add(GRU(units=200, return_sequences=True, input_shape=(None, num_x_signals,)))
 # model.add(Dropout(0.2))
-# model.add(GRU(100, return_sequences=True))
+model.add(GRU(100, return_sequences=True))
 # model.add(Dropout(0.2))
 
 init = RandomUniform(minval=-0.05, maxval=0.05)
