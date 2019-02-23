@@ -31,7 +31,7 @@ df.drop(columns=["id_str", "truncated", "verified", "followers_count", "favourit
 # For agg tweets 
 df["tweet_count"] = 1
 
-date_df = pd.read_parquet("date_iex_data.parquet", engine="fastparquet")
+date_df = pd.read_parquet("iex_data/date_iex_data.parquet", engine="fastparquet")
 
 print("df:", df.shape)
 print("Date_df:", date_df.shape)
