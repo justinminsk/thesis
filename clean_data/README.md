@@ -13,6 +13,7 @@ IF DATA IS IN GCS
 OR
 
 1. `python3 clean_iex_data.py`
+1. `python3 clean_wallstreet_data.py`
 1. `python3 clean_twitter_data.py`
 
 
