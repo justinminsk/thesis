@@ -1,6 +1,7 @@
 #!/bin/bash
 mkdir iex_data
 mkdir twitter_data
+mkdir wallstreet_data
 
 gsutil cp -r gs://jminsk_thesis/iex_data .
 

@@ -1,6 +1,7 @@
 iex models
 GRU: loss (test-set): 3.3585554774617776e-05
 LSTM: loss (test-set): 4.118878860026598e-05
+GRU - GRU: 
 
 
 twitter models
