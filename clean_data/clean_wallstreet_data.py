@@ -72,7 +72,7 @@ df.ws_content = df.ws_content.apply(pre_processing)
 print("Preprocessed")
 print(df.shape)
 
-word_grams = TfidfVectorizer(analyzer = "word", ngram_range = (1, 5), stop_words="english")
+word_grams = TfidfVectorizer(analyzer = "word", ngram_range = (1, 5), stop_words="english", max_features=100000)
 
 word_vector = word_grams.fit_transform(df.ws_content)
 
