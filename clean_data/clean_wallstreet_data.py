@@ -78,6 +78,8 @@ word_vector = word_grams.fit_transform(df.ws_content)
 
 word_df = pd.DataFrame()
 
+df = df.drop["ws_content"]
+
 for i, col in enumerate(word_grams.get_feature_names()):
     word_df[col] = pd.Series(word_vector[:, i].toarray().ravel())
 
