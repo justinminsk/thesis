@@ -16,7 +16,7 @@ print("New Model")
 print("Getting Data")
 
 x_data = load_npz("twitter_data/x_twitter_data.npz")
-x_data = x_data.tocsr()
+x_data = x_data.todense() # .tocsr()
 
 # Used to split later
 train_split = 0.8
