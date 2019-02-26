@@ -77,7 +77,7 @@ def batch_generator(batch_size, sequence_length):
 
 
 batch_size = 5
-sequence_length = 1050
+sequence_length = 500
 
 generator = batch_generator(batch_size=batch_size,
                             sequence_length=sequence_length)
