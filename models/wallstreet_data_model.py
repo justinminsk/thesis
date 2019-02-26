@@ -3,8 +3,9 @@ import matplotlib.pyplot as plt
 import tensorflow as tf
 import numpy as np
 import pandas as pd
-from scipy.sparse import load_npz
+from scipy.sparse import load_npz, csr_matrix
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.model_selection import train_test_split
 from tensorflow.python.keras.initializers import RandomUniform
 from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.layers import Input, Dense, Dropout, Embedding, LSTM, GRU
@@ -16,7 +17,7 @@ print("New Model")
 print("Getting Data")
 
 x_data = load_npz("wallstreet_data/x_wallstreet_data.npz")
-x_data = x_data.todense()
+x_data = x_data.tocsr()
 
 # Used to split later
 train_split = 0.8
@@ -29,6 +30,8 @@ print("Shape x_data:", x_data.shape)
 
 y_data = np.load("wallstreet_data/y_wallstreet_data.npy")
 print("Shape y_data:", y_data.shape)
+
+y_data = y_data.reshape(y_data.shape[0], 1)
 
 num_x_signals = x_data.shape[1]
 num_y_signals = 1
@@ -73,8 +76,8 @@ def batch_generator(batch_size, sequence_length):
         yield (x_batch, y_batch)
 
 
-batch_size = 50
-sequence_length = 3200
+batch_size = 10
+sequence_length = 1050
 
 generator = batch_generator(batch_size=batch_size,
                             sequence_length=sequence_length)
@@ -140,7 +143,7 @@ model.compile(loss=loss_mse_warmup, optimizer=optimizer)
 print(model.summary())
 
 
-path_checkpoint = 'twitter_checkpoint.keras'
+path_checkpoint = 'wallstreet_checkpoint.keras'
 callback_checkpoint = ModelCheckpoint(filepath=path_checkpoint,
                                       monitor='val_loss',
                                       verbose=1,
@@ -150,7 +153,7 @@ callback_checkpoint = ModelCheckpoint(filepath=path_checkpoint,
 callback_early_stopping = EarlyStopping(monitor='val_loss',
                                         patience=3, verbose=1)
 
-callback_tensorboard = TensorBoard(log_dir='./twitter_logs/',
+callback_tensorboard = TensorBoard(log_dir='./wallstreet_logs/',
                                    histogram_freq=0,
                                    write_graph=False)
 

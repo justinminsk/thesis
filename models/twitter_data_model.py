@@ -16,7 +16,7 @@ print("New Model")
 print("Getting Data")
 
 x_data = load_npz("twitter_data/x_twitter_data.npz")
-x_data = x_data.todense()
+x_data = x_data.tocsr()
 
 # Used to split later
 train_split = 0.8
@@ -29,6 +29,8 @@ print("Shape x_data:", x_data.shape)
 
 y_data = np.load("twitter_data/y_twitter_data.npy")
 print("Shape y_data:", y_data.shape)
+
+y_data = y_data.reshape(y_data.shape[0], 1)
 
 num_x_signals = x_data.shape[1]
 num_y_signals = 1
@@ -73,8 +75,8 @@ def batch_generator(batch_size, sequence_length):
         yield (x_batch, y_batch)
 
 
-batch_size = 50
-sequence_length = 3200
+batch_size = 10
+sequence_length = 1050
 
 generator = batch_generator(batch_size=batch_size,
                             sequence_length=sequence_length)
