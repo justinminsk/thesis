@@ -8,3 +8,4 @@ twitter models
 
 
 wallstreet models
+GRU:

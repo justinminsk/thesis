@@ -76,8 +76,8 @@ def batch_generator(batch_size, sequence_length):
         yield (x_batch, y_batch)
 
 
-batch_size = 75
-sequence_length = 5
+batch_size = 25
+sequence_length = 30
 
 generator = batch_generator(batch_size=batch_size,
                             sequence_length=sequence_length)
