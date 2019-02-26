@@ -5,3 +5,6 @@ GRU - GRU: loss (test-set): 2.2447573428507894e-05
 
 
 twitter models
+
+
+wallstreet models

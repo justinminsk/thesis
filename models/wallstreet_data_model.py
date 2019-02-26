@@ -15,7 +15,7 @@ print("New Model")
 
 print("Getting Data")
 
-x_data = load_npz("twitter_data/x_twitter_data.npz")
+x_data = load_npz("wallstreet_data/x_wallstreet_data.npz")
 x_data = x_data.todense()
 
 # Used to split later
@@ -27,7 +27,7 @@ shift_steps = 1
 
 print("Shape x_data:", x_data.shape)
 
-y_data = np.load("twitter_data/y_twitter_data.npy")
+y_data = np.load("wallstreet_data/y_wallstreet_data.npy")
 print("Shape y_data:", y_data.shape)
 
 num_x_signals = x_data.shape[1]

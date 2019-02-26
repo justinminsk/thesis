@@ -1,7 +1,7 @@
 import re
 import pandas as pd 
 import numpy as np 
-from scipy.sparse import coo_matrix, hstack
+from scipy.sparse import coo_matrix, hstack, save_npz
 from sklearn.externals import joblib
 from sklearn.feature_extraction.text import HashingVectorizer, TfidfTransformer
 from sklearn.preprocessing import MinMaxScaler
@@ -69,4 +69,4 @@ print(tfifd_vector.dtype)
 
 x_data = hstack([tfifd_vector, scaled_count])
 
-np.save("twitter_data/x_twitter_data", x_data)
+save_npz("twitter_data/x_twitter_data", x_data)

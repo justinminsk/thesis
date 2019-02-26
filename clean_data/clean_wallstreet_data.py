@@ -3,7 +3,7 @@ import re
 import pandas as pd
 import numpy as np
 from dateutil.parser import parse
-from scipy.sparse import coo_matrix, hstack
+from scipy.sparse import coo_matrix, hstack, save_npz
 from sklearn.externals import joblib
 from sklearn.feature_extraction.text import HashingVectorizer, TfidfTransformer
 from sklearn.preprocessing import MinMaxScaler
@@ -71,11 +71,11 @@ df.ws_content = df.ws_content.apply(pre_processing)
 print("Preprocessed")
 print(df.shape)
 
-vectorizer = HashingVectorizer(stop_words="english", ngram_range=(1,5))
-
-print("text hashed")
+vectorizer = HashingVectorizer(stop_words="english", ngram_range=(1,7))
 
 text_vector = vectorizer.fit_transform(df.ws_content)
+
+print("text hashed")
 
 print("text vector:", text_vector.shape)
 
@@ -99,13 +99,13 @@ np.save("wallstreet_data/y_wallstreet_data", y_data)
 
 scaled_count = coo_matrix(np.array(scaled_values[:,0]).reshape(scaled_values.shape[0], 1))
 
-print(scaled_count.shape)
-print(scaled_count.dtype)
-print(tfifd_vector.dtype)
+print("y_data:",y_data.shape)
 
 x_data = hstack([tfifd_vector, scaled_count])
 
-np.save("wallstreet_data/x_wallstreet_data", x_data)
+save_npz("wallstreet_data/x_wallstreet_data", x_data)
+
+print("x_data:", x_data.shape)
 
 print("Full DataFrame Saved")
 
