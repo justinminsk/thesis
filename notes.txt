@@ -1,8 +1,9 @@
 iex models
+Train Batch Shape: (100, 3200, 20)
 GRU: loss (test-set): 3.3585554774617776e-05
 LSTM: loss (test-set): 4.118878860026598e-05
 GRU - GRU: loss (test-set): 2.2447573428507894e-05
-
+GRU - DROPOUT - GRU - DROPOUT: loss (test-set): 0.00045545812463387847
 
 twitter models
 
