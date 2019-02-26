@@ -17,7 +17,7 @@ print("New Model")
 print("Getting Data")
 
 x_data = load_npz("wallstreet_data/x_wallstreet_data.npz")
-x_data = x_data.tocsr()
+x_data = x_data.todense() # .tocsr()
 
 # Used to split later
 train_split = 0.8
@@ -70,7 +70,7 @@ def batch_generator(batch_size, sequence_length):
             idx = np.random.randint(num_train - sequence_length)
             
             # Copy the sequences of data starting at this index.
-            x_batch[i] = x_train[idx:idx+sequence_length].todense()
+            x_batch[i] = x_train[idx:idx+sequence_length] # .todense()
             y_batch[i] = y_train[idx:idx+sequence_length]
         
         yield (x_batch, y_batch)
