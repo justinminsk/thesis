@@ -70,7 +70,7 @@ def batch_generator(batch_size, sequence_length):
             idx = np.random.randint(num_train - sequence_length)
             
             # Copy the sequences of data starting at this index.
-            x_batch[i] = x_train[idx:idx+sequence_length]
+            x_batch[i] = x_train[idx:(idx+sequence_length)]
             y_batch[i] = y_train[idx:idx+sequence_length]
         
         yield (x_batch, y_batch)
