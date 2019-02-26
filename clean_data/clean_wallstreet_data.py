@@ -1,13 +1,12 @@
 import fastparquet
-import os
-import glob
 import re
-from scipy import stats
-from tqdm import tqdm
 import pandas as pd
 import numpy as np
 from dateutil.parser import parse
-from sklearn.feature_extraction.text import TfidfVectorizer
+from scipy.sparse import coo_matrix, hstack
+from sklearn.externals import joblib
+from sklearn.feature_extraction.text import HashingVectorizer, TfidfTransformer
+from sklearn.preprocessing import MinMaxScaler
 
 
 print("--Start--")
@@ -72,34 +71,41 @@ df.ws_content = df.ws_content.apply(pre_processing)
 print("Preprocessed")
 print(df.shape)
 
-word_grams = TfidfVectorizer(analyzer = "word", ngram_range = (1, 5), stop_words="english", max_features=100000)
+vectorizer = HashingVectorizer(stop_words="english", ngram_range=(1,5))
 
-word_vector = word_grams.fit_transform(df.ws_content)
+print("text hashed")
 
-word_df = pd.DataFrame()
+text_vector = vectorizer.fit_transform(df.ws_content)
 
-df = df.drop(columns=["ws_content"])
+print("text vector:", text_vector.shape)
 
-for i, col in enumerate(word_grams.get_feature_names()):
-    word_df[col] = pd.Series(word_vector[:, i].toarray().ravel())
+tfifd_vectorizer = TfidfTransformer()
 
-df = pd.merge(df, word_df, left_index=True, right_index=True)
+tfifd_vector = tfifd_vectorizer.fit_transform(text_vector)
 
-del word_df
+scaler = MinMaxScaler()
 
-print("TDIDF Completed")
-print(df.shape)
+int_values = df[["time_since_col", "stock_price_col"]]
 
-print(" ")
+scaled_values = scaler.fit_transform(int_values)
 
-print(df.head())
+print("scaled values:", scaled_values.shape)
 
-print(" ")
+joblib.dump(scaler, 'wallstreet_data/wallstreet_scaler.pkl') 
 
-del date_df
+y_data = scaled_values[:,1]
 
-filename = "wallstreet_data/wallstreet_data.parquet"
-fastparquet.write(filename, df)
+np.save("wallstreet_data/y_wallstreet_data", y_data)
+
+scaled_count = coo_matrix(np.array(scaled_values[:,0]).reshape(scaled_values.shape[0], 1))
+
+print(scaled_count.shape)
+print(scaled_count.dtype)
+print(tfifd_vector.dtype)
+
+x_data = hstack([tfifd_vector, scaled_count])
+
+np.save("wallstreet_data/x_wallstreet_data", x_data)
 
 print("Full DataFrame Saved")
 
