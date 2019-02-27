@@ -7,6 +7,8 @@ from sklearn.externals import joblib
 from tensorflow.keras.models import load_model
 
 
+warmup_steps = 20
+
 def loss_mse_warmup(y_true, y_pred):
     """
     Calculate the Mean Squared Error between y_true and y_pred,
