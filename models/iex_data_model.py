@@ -6,7 +6,7 @@ import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.externals import joblib
 from tensorflow.python.keras.initializers import RandomUniform
-from tensorflow.python.keras.models import Sequential
+from tensorflow.python.keras.models import Sequential, save_model
 from tensorflow.python.keras.layers import Input, Dense, Dropout, Embedding, LSTM, GRU
 from tensorflow.python.keras.optimizers import RMSprop
 from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard, ReduceLROnPlateau
@@ -204,68 +204,5 @@ model.fit_generator(generator=generator,
 result = model.evaluate(x=np.expand_dims(x_test_scaled, axis=0),
                         y=np.expand_dims(y_test_scaled, axis=0))
 
+save_model(model, "iex_model/model.h5")
 print("loss (test-set):", result)                       
-
-"""
-def plot_comparison(start_idx, length=100, train=True):
-    """"""
-    Plot the predicted and true output-signals.
-    
-    :param start_idx: Start-index for the time-series.
-    :param length: Sequence-length to process and plot.
-    :param train: Boolean whether to use training- or test-set.
-    """"""
-    
-    if train:
-        # Use training-data.
-        x = x_train_scaled
-        y_true = y_train
-    else:
-        # Use test-data.
-        x = x_test_scaled
-        y_true = y_test
-    
-    # End-index for the sequences.
-    end_idx = start_idx + length
-    
-    # Select the sequences from the given start-index and
-    # of the given length.
-    x = x[start_idx:end_idx]
-    y_true = y_true[start_idx:end_idx]
-    
-    # Input-signals for the model.
-    x = np.expand_dims(x, axis=0)
-
-    # Use the model to predict the output-signals.
-    y_pred = model.predict(x)
-    
-    # The output of the model is between 0 and 1.
-    # Do an inverse map to get it back to the scale
-    # of the original data-set.
-    y_pred_rescaled = y_scaler.inverse_transform(y_pred[0])
-    
-    # For each output-signal.
-    for signal in range(len("price")):
-        # Get the output-signal predicted by the model.
-        signal_pred = y_pred_rescaled[:, signal]
-        
-        # Get the true output-signal from the data-set.
-        signal_true = y_true[:, signal]
-
-        # Make the plotting-canvas bigger.
-        plt.figure(figsize=(15,5))
-        
-        # Plot and compare the two signals.
-        plt.plot(signal_true, label='true')
-        plt.plot(signal_pred, label='pred')
-        
-        # Plot grey box for warmup-period.
-        p = plt.axvspan(0, warmup_steps, facecolor='black', alpha=0.15)
-        
-        # Plot labels etc.
-        plt.ylabel(signal)
-        plt.legend()
-        plt.savefig("iex_pred.png")
-
-plot_comparison(start_idx=200, length=1000, train=False)
-"""
