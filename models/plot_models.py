@@ -122,5 +122,5 @@ def plot_comparison(start_idx, length=100, train=True, model_type=""):
 
 if __name__ == "__main__":
     x_train_scaled, y_train, x_test_scaled, y_test, y_scaler = get_iex_data()
-    model = load_model("iex_model/iex_checkpoint.keras")
+    model = load_model("iex_model/model.h5")
     plot_comparison(start_idx=20, length=2000, train=False, model_type="iex_model")
