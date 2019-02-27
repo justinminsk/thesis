@@ -4,6 +4,7 @@ import tensorflow as tf
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.externals import joblib
 from tensorflow.python.keras.initializers import RandomUniform
 from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.layers import Input, Dense, Dropout, Embedding, LSTM, GRU
@@ -63,6 +64,9 @@ x_test_scaled = x_scaler.transform(x_test)
 y_scaler = MinMaxScaler(feature_range = (0, 1))
 y_train_scaled = y_scaler.fit_transform(y_train)
 y_test_scaled = y_scaler.transform(y_test)
+
+# Save y scaler
+joblib.dump(y_scaler, 'iex_model/iex_y_scaler.pkl') 
 
 # y_train_scaled = y_train_scaled.reshape(y_train_scaled.shape[0],)
 # y_test_scaled = y_test_scaled.reshape(y_test_scaled.shape[0],)
@@ -151,9 +155,9 @@ def loss_mse_warmup(y_true, y_pred):
 
 # an LSTM to a GRU to a dense output
 model = Sequential()
-model.add(LSTM(units=200, return_sequences=True, input_shape=(None, num_x_signals,)))
+model.add(GRU(units=200, return_sequences=True, input_shape=(None, num_x_signals,)))
 # model.add(Dropout(0.2))
-model.add(LSTM(100, return_sequences=True))
+model.add(GRU(100, return_sequences=True))
 # model.add(Dropout(0.2))
 
 init = RandomUniform(minval=-0.05, maxval=0.05)
@@ -165,7 +169,7 @@ model.compile(loss=loss_mse_warmup, optimizer=optimizer)
 print(model.summary())
 
 
-path_checkpoint = 'iex_checkpoint.keras'
+path_checkpoint = 'iex_model/iex_checkpoint.keras'
 callback_checkpoint = ModelCheckpoint(filepath=path_checkpoint,
                                       monitor='val_loss',
                                       verbose=1,
@@ -175,7 +179,7 @@ callback_checkpoint = ModelCheckpoint(filepath=path_checkpoint,
 callback_early_stopping = EarlyStopping(monitor='val_loss',
                                         patience=3, verbose=1)
 
-callback_tensorboard = TensorBoard(log_dir='./iex_logs/',
+callback_tensorboard = TensorBoard(log_dir='iex_model/iex_logs/',
                                    histogram_freq=0,
                                    write_graph=False)
 
