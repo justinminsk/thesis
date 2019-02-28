@@ -152,7 +152,7 @@ def plot_comparison(start_idx, length=100, train=True, model_type=""):
     # Plot labels etc.
     plt.ylabel("Price")
     plt.legend()
-    plt.savefig(model_type,"/graph.png")
+    plt.savefig(model_type + "/graph.png")
 
 
 if __name__ == "__main__":
