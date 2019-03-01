@@ -71,7 +71,7 @@ df.ws_content = df.ws_content.apply(pre_processing)
 print("Preprocessed")
 print(df.shape)
 
-vectorizer = HashingVectorizer(stop_words="english", ngram_range=(1,7))
+vectorizer = HashingVectorizer(stop_words="english", ngram_range=(2,5), n_features=75000)
 
 text_vector = vectorizer.fit_transform(df.ws_content)
 
