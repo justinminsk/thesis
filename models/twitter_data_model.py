@@ -8,7 +8,7 @@ from sklearn.preprocessing import MinMaxScaler
 from tensorflow.python.keras.initializers import RandomUniform
 from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.layers import Input, Dense, Dropout, Embedding, LSTM, GRU
-from tensorflow.python.keras.optimizers import RMSprop
+from tensorflow.python.keras.optimizers import RMSprop, SGD
 from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard, ReduceLROnPlateau
 
 print("New Model")
@@ -16,7 +16,7 @@ print("New Model")
 print("Getting Data")
 
 x_data = load_npz("twitter_data/x_twitter_data.npz")
-x_data = x_data.todense() # .tocsr()
+x_data = x_data.tocsr() # .todense()
 
 # Used to split later
 train_split = 0.8
@@ -69,14 +69,14 @@ def batch_generator(batch_size, sequence_length):
             idx = np.random.randint(num_train - sequence_length)
             
             # Copy the sequences of data starting at this index.
-            x_batch[i] = x_train[idx:idx+sequence_length]
+            x_batch[i] = x_train[idx:idx+sequence_length].todense()
             y_batch[i] = y_train[idx:idx+sequence_length]
         
         yield (x_batch, y_batch)
 
 
-batch_size = 2
-sequence_length = 455
+batch_size = 5
+sequence_length = 1000
 
 generator = batch_generator(batch_size=batch_size,
                             sequence_length=sequence_length)
@@ -133,10 +133,10 @@ model.add(GRU(units=200, return_sequences=True, input_shape=(None, num_x_signals
 # model.add(LSTM(100, return_sequences=True))
 # model.add(Dropout(0.2))
 
-init = RandomUniform(minval=-0.05, maxval=0.05)
+init = RandomUniform(minval=-0.1, maxval=0.1)
 model.add(Dense(num_y_signals, activation='linear', kernel_initializer=init)) #  activation='sigmoid'
 
-optimizer = RMSprop(lr=1e-3)
+optimizer = SGD(lr=1e-3)
 model.compile(loss=loss_mse_warmup, optimizer=optimizer)
 
 print(model.summary())

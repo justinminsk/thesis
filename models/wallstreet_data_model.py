@@ -134,7 +134,7 @@ model.add(GRU(units=50, return_sequences=True, input_shape=(None, num_x_signals,
 # model.add(LSTM(100, return_sequences=True))
 # model.add(Dropout(0.2))
 
-init = RandomUniform(minval=-0.05, maxval=0.05)
+init = RandomUniform(minval=-0.1, maxval=0.1)
 model.add(Dense(num_y_signals, activation='linear', kernel_initializer=init)) #  activation='sigmoid'
 
 optimizer = SGD(lr=1e-3)
