@@ -7,7 +7,7 @@ from scipy.sparse import load_npz, csr_matrix
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 from tensorflow.python.keras.initializers import RandomUniform
-from tensorflow.python.keras.models import Sequential
+from tensorflow.python.keras.models import Sequential, save_model
 from tensorflow.python.keras.layers import Input, Dense, Dropout, Embedding, LSTM, GRU
 from tensorflow.python.keras.optimizers import RMSprop, SGD
 from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard, ReduceLROnPlateau
@@ -178,4 +178,5 @@ model.fit_generator(generator=generator,
 result = model.evaluate(x=np.expand_dims(x_test, axis=0),
                         y=np.expand_dims(y_test, axis=0))
 
+save_model(model, "wallstreet_model/model.h5")
 print("loss (test-set):", result)                       

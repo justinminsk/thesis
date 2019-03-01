@@ -6,7 +6,7 @@ import pandas as pd
 from scipy.sparse import load_npz
 from sklearn.preprocessing import MinMaxScaler
 from tensorflow.python.keras.initializers import RandomUniform
-from tensorflow.python.keras.models import Sequential
+from tensorflow.python.keras.models import Sequential, save_model
 from tensorflow.python.keras.layers import Input, Dense, Dropout, Embedding, LSTM, GRU
 from tensorflow.python.keras.optimizers import RMSprop, SGD
 from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard, ReduceLROnPlateau
@@ -75,7 +75,7 @@ def batch_generator(batch_size, sequence_length):
         yield (x_batch, y_batch)
 
 
-batch_size = 15
+batch_size = 10
 sequence_length = 1000
 
 generator = batch_generator(batch_size=batch_size,
@@ -177,4 +177,5 @@ model.fit_generator(generator=generator,
 result = model.evaluate(x=np.expand_dims(x_test, axis=0),
                         y=np.expand_dims(y_test, axis=0))
 
+save_model(model, "twitter_model/model.h5")
 print("loss (test-set):", result)                       
