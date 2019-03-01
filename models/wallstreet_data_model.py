@@ -11,15 +11,6 @@ from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.layers import Input, Dense, Dropout, Embedding, LSTM, GRU
 from tensorflow.python.keras.optimizers import RMSprop
 from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard, ReduceLROnPlateau
-from google3.third_party.tensorflow.core.protobuf import rewriter_config_pb2
-    
-config_proto = tf.ConfigProto()
-
-off = rewriter_config_pb2.RewriterConfig.OFF
-config_proto.graph_options.rewrite_options.arithmetic_optimization = off
-    
-session = tf.Session(config=config_proto)
-
 
 print("New Model")
 
@@ -138,7 +129,7 @@ def loss_mse_warmup(y_true, y_pred):
 
 # an lstm to a gru to a dense output
 model = Sequential()
-model.add(GRU(units=100, return_sequences=True, input_shape=(None, num_x_signals,)))
+model.add(GRU(units=50, return_sequences=True, input_shape=(None, num_x_signals,)))
 # model.add(Dropout(0.2))
 # model.add(LSTM(100, return_sequences=True))
 # model.add(Dropout(0.2))
