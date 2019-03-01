@@ -9,7 +9,7 @@ from sklearn.model_selection import train_test_split
 from tensorflow.python.keras.initializers import RandomUniform
 from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.layers import Input, Dense, Dropout, Embedding, LSTM, GRU
-from tensorflow.python.keras.optimizers import RMSprop
+from tensorflow.python.keras.optimizers import RMSprop, SGD
 from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard, ReduceLROnPlateau
 
 print("New Model")
@@ -137,7 +137,7 @@ model.add(GRU(units=50, return_sequences=True, input_shape=(None, num_x_signals,
 init = RandomUniform(minval=-0.05, maxval=0.05)
 model.add(Dense(num_y_signals, activation='linear', kernel_initializer=init)) #  activation='sigmoid'
 
-optimizer = RMSprop(lr=1e-3)
+optimizer = SGD(lr=1e-3)
 model.compile(loss=loss_mse_warmup, optimizer=optimizer)
 
 print(model.summary())
