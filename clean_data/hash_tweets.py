@@ -35,7 +35,7 @@ df.text = df.text.apply(pre_processing)
 
 print("preprocessed")
 
-vectorizer = HashingVectorizer(stop_words="english", ngram_range=(1,5))
+vectorizer = HashingVectorizer(stop_words="english", ngram_range=(1,4), n_features=75000)
 
 print("text hashed")
 
