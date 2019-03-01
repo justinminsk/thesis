@@ -90,6 +90,8 @@ print(y_batch.shape)
 validation_data = (np.expand_dims(x_test, axis=0),
                    np.expand_dims(y_test, axis=0))
 
+print(validation_data.shape)
+
 print("Build Model")
 
 warmup_steps = 20
