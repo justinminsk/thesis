@@ -170,7 +170,7 @@ callbacks = [callback_early_stopping,
 
 print("Train Model")
 model.fit_generator(generator=generator,
-                    epochs=20,
+                    epochs=50,
                     steps_per_epoch=100,
                     validation_data=validation_data,
                     callbacks=callbacks)
