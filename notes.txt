@@ -10,4 +10,4 @@ twitter models
 
 
 wallstreet models
-GRU:
+GRU: loss (test-set): 0.10785972326993942
