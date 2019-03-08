@@ -7,6 +7,7 @@ GRU - DROPOUT - GRU - DROPOUT: loss (test-set): 0.00045545812463387847
 LSTM - LSTM: loss (test-set): 0.00016301091818604618
 
 twitter models
+GRU: loss (test-set): 0.11920106410980225
 
 
 wallstreet models
