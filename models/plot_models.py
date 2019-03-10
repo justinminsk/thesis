@@ -205,10 +205,13 @@ if __name__ == "__main__":
     # The output of the model is between 0 and 1.
     # Do an inverse map to get it back to the scale
     # of the original data-set.
+    zeros = np.zeros(2000)
+    wallstreet_y_pred = np.hstack((zeros, twitter_y_pred))
     y_scaler = joblib.load("twitter_data/twitter_scaler.pkl")
-    twitter_y_pred_rescaled = y_scaler.inverse_transform(twitter_y_pred[0])
+    twitter_y_pred_rescaled = y_scaler.inverse_transform(twitter_y_pred)
     
     # Get the output-signal predicted by the model.
+    np.delete(twitter_y_pred_rescaled, 0, axis=2)
     twitter_signal_pred = twitter_y_pred_rescaled[:, 0]
 
     plt.plot(twitter_signal_pred, label='Twitter Model')
@@ -227,10 +230,13 @@ if __name__ == "__main__":
     # The output of the model is between 0 and 1.
     # Do an inverse map to get it back to the scale
     # of the original data-set.
+    zeros = np.zeros(2000)
+    wallstreet_y_pred = np.hstack((zeros, wallstreet_y_pred))
     y_scaler = joblib.load("wallstreet_data/wallstree_scaler.pkl")
-    wallstreet_y_pred_rescaled = y_scaler.inverse_transform(wallstreet_y_pred[0])
+    wallstreet_y_pred_rescaled = y_scaler.inverse_transform(wallstreet_y_pred)
     
     # Get the output-signal predicted by the model.
+    np.delete(wallstreet_y_pred_rescaled, 0, axis=2)
     wallstreet_signal_pred = wallstreet_y_pred_rescaled[:, 0]
 
     plt.plot(wallstreet_signal_pred, label='Wallstreet Model')
