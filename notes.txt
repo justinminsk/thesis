@@ -9,6 +9,5 @@ LSTM - LSTM: loss (test-set): 0.00016301091818604618
 twitter models
 GRU: loss (test-set): 0.11920106410980225
 
-
 wallstreet models
-GRU: loss (test-set): 0.10785972326993942
+GRU: loss (test-set): 0.10996559262275696

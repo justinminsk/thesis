@@ -1,4 +1,4 @@
-import matplotlib.pyplot as plt
+import fastparquet
 import tensorflow as tf
 import numpy as np
 import pandas as pd
@@ -94,7 +94,7 @@ def get_iex_data():
     y_scaler = MinMaxScaler(feature_range = (0, 1))
     y_train_scaled = y_scaler.fit_transform(y_train)
     y_test_scaled = y_scaler.transform(y_test)
-    return  x_test_scaled, y_test, y_scaler
+    return  x_test_scaled, x_train_scaled, y_scaler
 
 def get_twitter_data():
     x_data = load_npz("twitter_data/x_twitter_data.npz")
@@ -117,7 +117,7 @@ def get_twitter_data():
     x_train = x_data[0:num_train]
     x_test = x_data[num_train:]
 
-    return x_test
+    return x_test, x_train
 
 def get_wallstreet_data():
     x_data = load_npz("wallstreet_data/x_wallstreet_data.npz")
@@ -140,106 +140,34 @@ def get_wallstreet_data():
     x_train = x_data[0:num_train]
     x_test = x_data[num_train:]
 
-    return x_test
-    
+    return x_test, x_train
+
 
 if __name__ == "__main__":
-    iex_x_test, y_test, y_scaler = get_iex_data()
+    iex_x_test, iex_x_train, y_scaler = get_iex_data()
     iex_model = load_model("models/iex_model/model.h5", custom_objects={"loss_mse_warmup": loss_mse_warmup})
     twitter_model = load_model("models/twitter_model/model.h5", custom_objects={"loss_mse_warmup": loss_mse_warmup})
     wallstreet_model = load_model("models/wallstreet_model/model.h5", custom_objects={"loss_mse_warmup": loss_mse_warmup})
 
-    # plot data
-    # get the true values
-    y_true = y_test
-    
-    # End-index and start-index for the sequences.
-    start_idx = 20
-    length = 2000
-    end_idx = start_idx + length
-    
-    # Select the sequences from the given start-index and
-    # of the given length.
-    y_true = y_true[start_idx:end_idx]
-        
-    # Get the true output-signal from the data-set.
-    signal_true = y_true[:, 0]
+    iex_data = np.vstack((iex_x_test, iex_x_train))
+    iex_pred = iex_model.predict(iex_data)
 
-    # Make the plotting-canvas bigger.
-    plt.figure(figsize=(15,5))
-        
-    # Plot True Line
-    plt.plot(signal_true, label='True Values')
+    del ex_x_test, iex_x_train, iex_data
 
-    # Cycle Through Test Data for each model
-    # Input-signals for the model.
-    iex_x = iex_x_test
-    iex_x = iex_x[start_idx:end_idx]
-    iex_x = np.expand_dims(iex_x, axis=0)
+    twitter_test, twitter_train = get_twitter_data()
+    twitter_data = np.vstack((twitter_test, twitter_train))
 
-    # Use the model to predict the output-signals.
-    iex_y_pred = iex_model.predict(iex_x)
-    
-    # The output of the model is between 0 and 1.
-    # Do an inverse map to get it back to the scale
-    # of the original data-set.
-    iex_y_pred_rescaled = y_scaler.inverse_transform(iex_y_pred[0])
-    
-    # Get the output-signal predicted by the model.
-    iex_signal_pred = iex_y_pred_rescaled[:, 0]
+    twitter_pred = twitter_model.predict(twitter_data)
 
-    plt.plot(iex_signal_pred, label='Iex Model')
+    del twitter_test, twitter_train, twitter_data
 
-    del iex_x, iex_y_pred, iex_y_pred_rescaled, iex_x_test
+    wallstreet_test, wallstreet_train = get_wallstreet_data()
+    wallstreet_data = np.vstack((wallstreet_test, wallstreet_train))
 
-    # Get Twitter Data
-    twitter_x = get_twitter_data()
-    # Input-signals for the model.
-    twitter_x = twitter_x[start_idx:end_idx]
-    twitter_x = np.expand_dims(twitter_x, axis=0)
+    wallstreet_pred = twiiter_model.predict(wallstreet_data)
 
-    # Use the model to predict the output-signals.
-    twitter_y_pred = twitter_model.predict(twitter_x)
-    
-    # The output of the model is between 0 and 1.
-    # Do an inverse map to get it back to the scale
-    # of the original data-set.
-    twitter_y_pred_rescaled = y_scaler.inverse_transform(twitter_y_pred[0])
-    
-    # Get the output-signal predicted by the model.
-    twitter_signal_pred = twitter_y_pred_rescaled[:, 0]
+    del wallstreet_test, wallstreet_train, wallstreet_data
 
-    plt.plot(twitter_signal_pred, label='Twitter Model')
+    ensamble_data = pd.DataFrame({"iex_pred":iex_pred, "twitter_pred":twitter_pred, "wallstreet_pred":wallstreet_pred})
 
-    del twitter_x, twitter_y_pred, twitter_y_pred_rescaled
-
-    # Get WAllstreet Data
-    wallstreet_x = get_wallstreet_data()
-    # Input-signals for the model.
-    wallstreet_x = wallstreet_x[start_idx:end_idx]
-    wallstreet_x = np.expand_dims(wallstreet_x, axis=0)
-
-    # Use the model to predict the output-signals.
-    wallstreet_y_pred = wallstreet_model.predict(wallstreet_x)
-    
-    # The output of the model is between 0 and 1.
-    # Do an inverse map to get it back to the scale
-    # of the original data-set.
-    wallstreet_y_pred_rescaled = y_scaler.inverse_transform(wallstreet_y_pred[0])
-    
-    # Get the output-signal predicted by the model.
-    wallstreet_signal_pred = wallstreet_y_pred_rescaled[:, 0]
-
-    plt.plot(wallstreet_signal_pred, label='Wallstreet Model')
-
-    del wallstreet_x, wallstreet_y_pred, wallstreet_y_pred_rescaled
-        
-    # Plot grey box for warmup-period.
-    p = plt.axvspan(0, 20, facecolor='black', alpha=0.15)
-        
-    # Plot labels etc.
-    plt.ylabel("Price")
-    plt.xlabel("Minutes")
-    plt.legend()
-    save_path = "graph.png"
-    plt.savefig(save_path)
+    fastparquet.write("ensamble/ensamble_data.pq", ensamble_data)
