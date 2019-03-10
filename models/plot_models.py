@@ -205,10 +205,8 @@ if __name__ == "__main__":
     # The output of the model is between 0 and 1.
     # Do an inverse map to get it back to the scale
     # of the original data-set.
-    zeros = np.zeros(2000).reshape((1, 2000, 1))
-    print(zeros.shape)
-    print(twitter_y_pred.shape)
-    twitter_y_pred = np.hstack((zeros, twitter_y_pred))
+    zeros = np.zeros(2000).reshape((2000, 1))
+    twitter_y_pred = np.hstack((zeros, twitter_y_pred.reshape((2000, 1))))
     y_scaler = joblib.load("twitter_data/twitter_scaler.pkl")
     twitter_y_pred_rescaled = y_scaler.inverse_transform(twitter_y_pred)
     
@@ -232,10 +230,8 @@ if __name__ == "__main__":
     # The output of the model is between 0 and 1.
     # Do an inverse map to get it back to the scale
     # of the original data-set.
-    zeros = np.zeros(2000).reshape((1, 2000, 1))
-    print(zeros.shape)
-    print(wallstreet_y_pred.shape)
-    wallstreet_y_pred = np.hstack((zeros, wallstreet_y_pred))
+    zeros = np.zeros(2000).reshape((2000, 1))
+    wallstreet_y_pred = np.hstack((zeros, wallstreet_y_pred.reshape((2000, 1))))
     y_scaler = joblib.load("wallstreet_data/wallstree_scaler.pkl")
     wallstreet_y_pred_rescaled = y_scaler.inverse_transform(wallstreet_y_pred)
     
