@@ -151,6 +151,8 @@ if __name__ == "__main__":
     wallstreet_model = load_model("models/wallstreet_model/model.h5", custom_objects={"loss_mse_warmup": loss_mse_warmup})
 
     iex_data = np.vstack((iex_x_test, iex_x_train))
+    iex_data = np.expand_dims(iex_data, axis=0)
+
     iex_pred = iex_model.predict(iex_data)
 
     iex_pred = y_scaler.inverse_transform(iex_pred[0])
@@ -159,6 +161,7 @@ if __name__ == "__main__":
 
     twitter_test, twitter_train = get_twitter_data()
     twitter_data = np.vstack((twitter_test, twitter_train))
+    twitter_data = np.expand_dims(twitter_data, axis=0)
 
     twitter_pred = twitter_model.predict(twitter_data)
 
@@ -168,6 +171,7 @@ if __name__ == "__main__":
 
     wallstreet_test, wallstreet_train = get_wallstreet_data()
     wallstreet_data = np.vstack((wallstreet_test, wallstreet_train))
+    wallstreet_data = np.expand_dims(wallstreet_data, axis=0)
 
     wallstreet_pred = twiiter_model.predict(wallstreet_data)
 
