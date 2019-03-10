@@ -232,7 +232,7 @@ if __name__ == "__main__":
     # of the original data-set.
     zeros = np.zeros(2000).reshape((2000, 1))
     wallstreet_y_pred = np.hstack((zeros, wallstreet_y_pred.reshape((2000, 1))))
-    y_scaler = joblib.load("wallstreet_data/wallstree_scaler.pkl")
+    y_scaler = joblib.load("wallstreet_data/wallstreet_scaler.pkl")
     wallstreet_y_pred_rescaled = y_scaler.inverse_transform(wallstreet_y_pred)
     
     # Get the output-signal predicted by the model.
