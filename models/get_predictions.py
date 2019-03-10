@@ -160,7 +160,7 @@ if __name__ == "__main__":
 
     iex_pred = y_scaler.inverse_transform(iex_pred[0])
 
-    iex_pred_df = pd.DateFrame({"date_col":non_twitter_dates, "iex_pred":iex_pred})
+    iex_pred_df = pd.DataFrame({"date_col":non_twitter_dates, "iex_pred":iex_pred})
 
     del iex_x_test, iex_x_train, iex_data
 
@@ -189,7 +189,7 @@ if __name__ == "__main__":
 
     wallstreet_pred = y_scaler.inverse_transform(wallstreet_pred[0])
 
-    wallstreet_pred_df = pd.DateFrame({"date_col":non_twitter_dates, "iex_pred":wallstreet_pred})
+    wallstreet_pred_df = pd.DataFrame({"date_col":non_twitter_dates, "iex_pred":wallstreet_pred})
 
     del wallstreet_test, wallstreet_train, wallstreet_data
 
