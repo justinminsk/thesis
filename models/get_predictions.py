@@ -173,7 +173,7 @@ if __name__ == "__main__":
     wallstreet_data = np.vstack((wallstreet_test, wallstreet_train))
     wallstreet_data = np.expand_dims(wallstreet_data, axis=0)
 
-    wallstreet_pred = twiiter_model.predict(wallstreet_data)
+    wallstreet_pred = wallstreet_model.predict(wallstreet_data)
 
     wallstreet_pred = y_scaler.inverse_transform(wallstreet_pred[0])
 
