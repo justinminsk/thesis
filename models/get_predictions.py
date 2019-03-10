@@ -177,7 +177,7 @@ if __name__ == "__main__":
 
     twitter_pred = y_scaler.inverse_transform(twitter_pred[0])
 
-    twitter_pred_df = pd.DateFrame({"date_col":twitter_date_col, "twitter_pred":twitter_pred.reshape(twitter_pred.shape[0],)})
+    twitter_pred_df = pd.DataFrame({"date_col":twitter_date_col, "twitter_pred":twitter_pred.reshape(twitter_pred.shape[0],)})
 
     del twitter_test, twitter_train, twitter_data
 
