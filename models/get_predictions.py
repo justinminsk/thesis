@@ -150,6 +150,9 @@ if __name__ == "__main__":
     twitter_model = load_model("models/twitter_model/model.h5", custom_objects={"loss_mse_warmup": loss_mse_warmup})
     wallstreet_model = load_model("models/wallstreet_model/model.h5", custom_objects={"loss_mse_warmup": loss_mse_warmup})
 
+    non_twitter_dates = pd.read_parquet("iex_data/date_iex_data.parquet")
+    non_twitter_dates = non_twitter_dates.date_col
+
     iex_data = np.vstack((iex_x_test, iex_x_train))
     iex_data = np.expand_dims(iex_data, axis=0)
 
@@ -157,7 +160,14 @@ if __name__ == "__main__":
 
     iex_pred = y_scaler.inverse_transform(iex_pred[0])
 
+    iex_pred_df = pd.DateFrame({"date_col":non_twitter_dates, "iex_pred":iex_pred})
+
     del iex_x_test, iex_x_train, iex_data
+
+    twitter_date_col = pd.read_parquet("twitter_data/twitter_data.parquet")
+    twitter_date_col = twitter_date_col.index.to_series()
+
+    twitter_date_col.to_pickle("twitter_data/date_index.pkl")
 
     twitter_test, twitter_train = get_twitter_data()
     twitter_data = np.vstack((twitter_test, twitter_train))
@@ -166,6 +176,8 @@ if __name__ == "__main__":
     twitter_pred = twitter_model.predict(twitter_data)
 
     twitter_pred = y_scaler.inverse_transform(twitter_pred[0])
+
+    twitter_pred_df = pd.DateFrame({"date_col":twitter_date_col, "twitter_pred":twitter_pred})
 
     del twitter_test, twitter_train, twitter_data
 
@@ -177,8 +189,11 @@ if __name__ == "__main__":
 
     wallstreet_pred = y_scaler.inverse_transform(wallstreet_pred[0])
 
+    wallstreet_pred_df = pd.DateFrame({"date_col":non_twitter_dates, "iex_pred":wallstreet_pred})
+
     del wallstreet_test, wallstreet_train, wallstreet_data
 
-    ensamble_data = pd.DataFrame({"iex_pred":iex_pred, "twitter_pred":twitter_pred, "wallstreet_pred":wallstreet_pred})
+    ensamble_data = pd.merge(wallstreet_pred_df, iex_pred_df, on="date_col")
+    ensamble_data = pd.merge(ensamble_data, twitter_pred_df, on="date_col")
 
     fastparquet.write("ensamble/ensamble_data.pq", ensamble_data)
