@@ -153,6 +153,8 @@ if __name__ == "__main__":
     iex_data = np.vstack((iex_x_test, iex_x_train))
     iex_pred = iex_model.predict(iex_data)
 
+    iex_pred = y_scaler.inverse_transform(iex_pred[0])
+
     del ex_x_test, iex_x_train, iex_data
 
     twitter_test, twitter_train = get_twitter_data()
@@ -160,12 +162,16 @@ if __name__ == "__main__":
 
     twitter_pred = twitter_model.predict(twitter_data)
 
+    twitter_pred = y_scaler.inverse_transform(twitter_pred[0])
+
     del twitter_test, twitter_train, twitter_data
 
     wallstreet_test, wallstreet_train = get_wallstreet_data()
     wallstreet_data = np.vstack((wallstreet_test, wallstreet_train))
 
     wallstreet_pred = twiiter_model.predict(wallstreet_data)
+
+    wallstreet_pred = y_scaler.inverse_transform(wallstreet_pred[0])
 
     del wallstreet_test, wallstreet_train, wallstreet_data
 
