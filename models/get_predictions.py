@@ -166,6 +166,7 @@ if __name__ == "__main__":
 
     twitter_date_col = pd.read_parquet("twitter_data/twitter_data.parquet")
     twitter_date_col = twitter_date_col.index.to_series()
+    twitter_date_col= twitter_date_col.reset_index(drop=True)
 
     twitter_date_col.to_pickle("twitter_data/date_index.pkl")
 
