@@ -189,7 +189,7 @@ if __name__ == "__main__":
 
     wallstreet_pred = y_scaler.inverse_transform(wallstreet_pred[0])
 
-    wallstreet_pred_df = pd.DataFrame({"date_col":non_twitter_dates, "iex_pred":wallstreet_pred})
+    wallstreet_pred_df = pd.DataFrame({"date_col":non_twitter_dates, "iex_pred":wallstreet_pred.reshape(twitter_pred.shape[0],)})
 
     del wallstreet_test, wallstreet_train, wallstreet_data
 
