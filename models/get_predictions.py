@@ -5,6 +5,7 @@ import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.externals import joblib
 from tensorflow.keras.models import load_model
+from scipy.sparse import load_npz
 
 
 warmup_steps = 20
