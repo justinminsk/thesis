@@ -157,7 +157,7 @@ if __name__ == "__main__":
 
     iex_pred = y_scaler.inverse_transform(iex_pred[0])
 
-    del ex_x_test, iex_x_train, iex_data
+    del iex_x_test, iex_x_train, iex_data
 
     twitter_test, twitter_train = get_twitter_data()
     twitter_data = np.vstack((twitter_test, twitter_train))
