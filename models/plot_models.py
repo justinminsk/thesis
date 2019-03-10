@@ -211,7 +211,7 @@ if __name__ == "__main__":
     twitter_y_pred_rescaled = y_scaler.inverse_transform(twitter_y_pred)
     
     # Get the output-signal predicted by the model.
-    np.delete(twitter_y_pred_rescaled, 0, axis=2)
+    np.delete(twitter_y_pred_rescaled, 0, axis=1)
     twitter_signal_pred = twitter_y_pred_rescaled[:, 0]
 
     plt.plot(twitter_signal_pred, label='Twitter Model')
@@ -236,7 +236,7 @@ if __name__ == "__main__":
     wallstreet_y_pred_rescaled = y_scaler.inverse_transform(wallstreet_y_pred)
     
     # Get the output-signal predicted by the model.
-    np.delete(wallstreet_y_pred_rescaled, 0, axis=2)
+    np.delete(wallstreet_y_pred_rescaled, 0, axis=1)
     wallstreet_signal_pred = wallstreet_y_pred_rescaled[:, 0]
 
     plt.plot(wallstreet_signal_pred, label='Wallstreet Model')
