@@ -205,6 +205,7 @@ if __name__ == "__main__":
     # The output of the model is between 0 and 1.
     # Do an inverse map to get it back to the scale
     # of the original data-set.
+    y_scaler = joblib.load("twitter_data/twitter_scaler.pkl")
     twitter_y_pred_rescaled = y_scaler.inverse_transform(twitter_y_pred[0])
     
     # Get the output-signal predicted by the model.
@@ -226,6 +227,7 @@ if __name__ == "__main__":
     # The output of the model is between 0 and 1.
     # Do an inverse map to get it back to the scale
     # of the original data-set.
+    y_scaler = joblib.load("wallstreet_data/wallstree_scaler.pkl")
     wallstreet_y_pred_rescaled = y_scaler.inverse_transform(wallstreet_y_pred[0])
     
     # Get the output-signal predicted by the model.
